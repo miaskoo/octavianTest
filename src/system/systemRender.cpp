@@ -1,6 +1,6 @@
 #include "systemRender.h"
 #include "entity.h"
-#include <GLUT/glut.h>
+#include "freeglut/glut.h"
 
 void systemRender::setOrthographic() {
     if (ortho) {

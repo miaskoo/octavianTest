@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <atomic>
+#include <memory>
 
 class entityCash;
 

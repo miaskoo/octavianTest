@@ -4,7 +4,6 @@
 #include "entity.h"
 #include "componentBase.h"
 #include "constructorWindow.h"
-#include "GLUT/glut.h"
 
 enum class tPos{x = 0U, y = 1U, z = 2U};
 enum class tSize{width = 0U, height = 1U, depth = 2U};

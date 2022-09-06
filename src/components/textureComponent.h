@@ -1,7 +1,6 @@
 #pragma once
 
 #include "componentBase.h"
-#include "GLUT/glut.h"
 
 class textureComponent : public componentBase<componentId::TEXTURE> {
 public:

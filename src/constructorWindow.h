@@ -17,13 +17,10 @@ public:
     void initScene();
     void destroyScene();
     void startUpdateThread();
-    void stopUpdateThread();
     void initGlutFunc();
     void startMainLoop();
     int getScreenW();
     int getScreenH();
-    int getMouseX();
-    int getMouseY();
     
     friend void glutDisplayFuncForwarder();
     friend void glutIdleFuncForwarder();

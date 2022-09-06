@@ -1,12 +1,19 @@
 #include "bufferComponent.h"
-#include "GLUT/glut.h"
 
 void bufferComponent::bind() const {
+#ifdef MACOS
     glBindVertexArrayAPPLE(buffIdx);
+#else
+    glBindVertexArray(buffIdx);
+#endif
 }
 
 void bufferComponent::unbind() const {
+#ifdef MACOS
     glBindVertexArrayAPPLE(0);
+#else
+    glBindVertexArray(0);
+#endif
 }
 
 void bufferComponent::use() const {

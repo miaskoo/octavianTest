@@ -1,5 +1,4 @@
 #include "colorComponent.h"
-#include "GLUT/glut.h"
 
 void colorComponent::bind() const {
     if (alphaMode) {

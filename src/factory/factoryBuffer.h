@@ -4,7 +4,12 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <GLUT/glut.h>
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
+#include "glew/glew.h"
+#include "freeglut/freeglut.h"
+#endif
 
 struct bufferIdx {
     GLuint vbo;

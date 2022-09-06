@@ -1,7 +1,6 @@
 #pragma once
 
 #include "componentBase.h"
-#include "GLUT/glut.h"
 
 class bufferComponent : public componentBase<componentId::BUFFER> {
 public:

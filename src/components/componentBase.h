@@ -1,4 +1,9 @@
 #pragma once
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
+#include "glew/glew.h"
+#endif
 
 enum class componentId {TRANSFORM = 0U, COLOR = 1U, TEXTURE = 2U, BUFFER = 3U, LABEL = 4U, SIZE = 5U};
 enum class stateButton {WAIT = 0U, HOVER = 1U, PRESS = 2U, LOCK = 0U};

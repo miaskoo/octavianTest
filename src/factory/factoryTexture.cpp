@@ -3,14 +3,22 @@
 #include <iostream>
 #include <filesystem>
 #include <assert.h>
+#include <freeglut/freeglut.h>
 
 void factoryTexture::loadTexturs() {
-    std::string names[] = {"resource/slot.png", "resource/slotTorus.png", "resource/scene.png", "resource/wait.png", "resource/hover.png", "resource/press.png"};
+#ifdef MACOS
+    const std::string dirSymbols = "/";
+#else
+    const std::string dirSymbols = "\\";
+#endif
+    const std::string dirResource = dirSymbols + "resource" + dirSymbols;
+    std::string names[] = { "slot.png", "slotTorus.png", "scene.png", "wait.png", "hover.png", "press.png" };
     for (const auto& name : names) {
-        auto buildPatch = std::filesystem::absolute("");
-        auto projectPatch = buildPatch.parent_path().parent_path().parent_path().parent_path();
-        auto dirResource = projectPatch.string() + "/" + name;
-        nameToTex[name] = SOIL_load_OGL_texture(dirResource.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, 0);
+        auto buildPatch = std::filesystem::absolute("." + dirSymbols);
+        auto projectPatch = buildPatch.parent_path().parent_path().parent_path();
+        auto needDir = projectPatch.string();
+        needDir += dirResource + name;
+        nameToTex[name] = SOIL_load_OGL_texture(needDir.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, 0);
     }
     
     for (const auto& texIdx : nameToTex) {
@@ -18,7 +26,6 @@ void factoryTexture::loadTexturs() {
             assert(false && (texIdx.first + " texture not load").c_str());
         }
     }
-    
     const GLchar* vertexShaderSource = {
     "\
        attribute vec3 inPosition;\

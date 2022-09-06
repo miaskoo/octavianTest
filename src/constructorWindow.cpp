@@ -11,7 +11,6 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#include <GLUT/glut.h>
 #include <chrono>
 #include <ctime>
 #include <thread>
@@ -24,6 +23,7 @@ void constructorWindow::initWindow(int argc, char **argv) {
     sRender.setWindowSize(screenW, screenH);
     srand(time(0U));
     glutCreateWindow("test");
+    glewInit();
 }
 
 void constructorWindow::initResource() {
@@ -35,7 +35,7 @@ void constructorWindow::updateWindow() {
     float dt = 0.0f;
     
     while(true) {
-        auto lastTime = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        auto lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     
         if (fpsLabel) {
             fpsLabel->getComponent<labelComponent>()->setText("Fps: " + std::to_string(lastFps));
@@ -50,7 +50,7 @@ void constructorWindow::updateWindow() {
             updateScene(dt);
         }
         
-        auto currentTime = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        auto currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         dt = currentTime - lastTime;
         if (dt < minDtUpdateMs) {
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(minDtUpdateMs - dt)));
@@ -90,7 +90,7 @@ void constructorWindow::renderScene() {
 }
 
 void constructorWindow::idleScene() {
-    auto currentIdleTime = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    auto currentIdleTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     auto dt = currentIdleTime - lastIdleTime;
     if (dt < minDtFpsMs) {
         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(minDtFpsMs - dt)));
@@ -178,11 +178,11 @@ void constructorWindow::initScene() {
     
     auto sceneSprite = fEntity.createSprite({0.f,0.f}, {static_cast<float>(screenW), static_cast<float>(screenH)});
     sceneSprite->setIgnoreSorting(true);
-    sceneSprite->getComponent<textureComponent>()->setTexIdx(fTexture.getTextureIdx("resource/scene.png"));
+    sceneSprite->getComponent<textureComponent>()->setTexIdx(fTexture.getTextureIdx("scene.png"));
     mainScene->addChild(sceneSprite);
     
     auto s = fEntity.createSprite(vec2f(30, -40), vec2f(1400, 850));
-    s->getComponent<textureComponent>()->setTexIdx(fTexture.getTextureIdx("resource/slot.png"));
+    s->getComponent<textureComponent>()->setTexIdx(fTexture.getTextureIdx("slot.png"));
     mainScene->addChild(s);
 
     auto uiNode = fEntity.createNode({-200.f,-100.f});
@@ -201,7 +201,10 @@ void constructorWindow::initScene() {
     uiNode->addChild(mousePosLabel);
     
     auto buttonPlay = fEntity.createButton({0,0}, {400, 100});
-    buttonPlay->getComponent<buttonComponent>()->setTexIdx(fTexture.getTextureIdx("resource/wait.png"), fTexture.getTextureIdx("resource/hover.png"), fTexture.getTextureIdx("resource/press.png"));
+    buttonPlay->getComponent<buttonComponent>()->setTexIdx(
+        fTexture.getTextureIdx("wait.png"),
+        fTexture.getTextureIdx("hover.png"),
+        fTexture.getTextureIdx("press.png"));
     buttonPlay->getComponent<transformComponent>()->setAnchor(tAnchor::y, 0.8f);
     mainScene->addChild(buttonPlay);
     
@@ -251,7 +254,7 @@ void constructorWindow::initScene() {
         
         auto torus = fEntity.createTorus(pos, size, 8, quaternion::getFromEuler3(0, 90, 0));
         auto component = torus->getComponent<textureComponent>();
-        component->setTexIdx(fTexture.getTextureIdx("resource/slotTorus.png"));
+        component->setTexIdx(fTexture.getTextureIdx("slotTorus.png"));
         component->setShaderIdx(fTexture.getShaderTextureIdx());
         auto tComponentTorus = torus->getComponent<transformComponent>();
         tComponentTorus->setRotate(tComponentTorus->getRotate() * quaternion::getFromEuler(quaternion::axisX, 22.5f));

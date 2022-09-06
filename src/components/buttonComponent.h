@@ -1,6 +1,5 @@
 #pragma once
 #include "spriteComponent.h"
-#include "GLUT/glut.h"
 
 class buttonComponent : public spriteComponent {
 public:

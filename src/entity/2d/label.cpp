@@ -2,7 +2,6 @@
 #include "transformComponent.h"
 #include "labelComponent.h"
 #include "colorComponent.h"
-#include <GLUT/glut.h>
 
 label::label() {
     auto component = addComponent<labelComponent>();

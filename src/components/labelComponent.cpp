@@ -1,5 +1,5 @@
 #include "labelComponent.h"
-#include "GLUT/glut.h"
+#include "freeglut/glut.h"
 
 void labelComponent::use() const {
     int xChar = 0;

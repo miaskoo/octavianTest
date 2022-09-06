@@ -30,7 +30,7 @@ void button::updateWithMousePos(int x, int y, stateMouse state) {
     auto x1 = pos[0];
     auto y1 = pos[1];
     auto x2 = pos[0] + size[0];
-    auto y2 = pos[1] - size[1];
+    auto y2 = pos[1] + size[1];
     if (x1 > x2) {
         std::swap(x1, x2);
     }

@@ -1,5 +1,11 @@
 #include "factoryBuffer.h"
 #include "struct.h"
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
+#include "glew/glew.h"
+#include "freeglut/freeglut.h"
+#endif
 
 void factoryBuffer::createTorus(int countSector) {
     // p1--p2
@@ -9,7 +15,7 @@ void factoryBuffer::createTorus(int countSector) {
     GLuint vboIdx = 0;
     GLuint vaoIdx = 0;
     GLuint eboIdx = 0;
-    const float sectorStep = 2.f * M_PI / countSector;
+    const float sectorStep = 2.f * 3.14159f / countSector;
     const float widthTriangles = 1;
     float xy = cosf(90.f);
     const int countDimension = 3;
@@ -118,12 +124,19 @@ void factoryBuffer::createTorus(int countSector) {
         setDataIndices(idxPoint, 3);
         setDataIndices(idxPoint, 1);
     }
-    
+
     glGenBuffers(1, &vboIdx);
+#ifdef MACOS
     glGenVertexArraysAPPLE(1, &vaoIdx);
+#else
+    glGenVertexArrays(1, &vaoIdx);
+#endif
     glGenBuffers(1, &eboIdx);
-    
+#ifdef MACOS
     glBindVertexArrayAPPLE(vaoIdx);
+#else
+    glBindVertexArray(vaoIdx);
+#endif
     
     glBindBuffer(GL_ARRAY_BUFFER, vboIdx);
     glBufferData(GL_ARRAY_BUFFER, countVertices * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
@@ -138,7 +151,11 @@ void factoryBuffer::createTorus(int countSector) {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
     
+#ifdef MACOS
     glBindVertexArrayAPPLE(0);
+#else
+    glBindVertexArray(0);
+#endif
     
     bufferIdx buff;
     buff.vbo = vboIdx;

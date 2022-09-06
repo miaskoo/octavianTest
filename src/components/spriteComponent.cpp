@@ -1,5 +1,4 @@
 #include "spriteComponent.h"
-#include "GLUT/glut.h"
 
 void spriteComponent::use() const {
     glBegin(GL_QUADS);

@@ -2,7 +2,12 @@
 
 #include <unordered_map>
 #include <string>
-#include <GLUT/glut.h>
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
+#include "glew/glew.h"
+#include "freeglut/freeglut.h"
+#endif
 
 class factoryTexture {
 public:
