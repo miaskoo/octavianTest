@@ -27,8 +27,7 @@ while [ "$1" != "" ]; do
 			HELP=true
 		;;
 		"-mac" | \
-		"-mvs19" | \
-		"-mvs17")
+		"-mvs19")
 			check_platform $1
 		;;
 		*)
@@ -58,30 +57,22 @@ if [ "$PLATFORM" == "mac" ]; then
 	mkdir -p ./build/mac
 	cd ./build/mac
 
-	cmake ../.. -G Xcode -DCMAKE_CONFIGURATION_TYPES="Release;Debug;"
+	cmake ../.. -G Xcode -DPLATFORM=MACOS
 fi
 
-if [ "$PLATFORM" == "mvs19" ] || [ "$PLATFORM" == "mvs17" ]; then
+if [ "$PLATFORM" == "mvs19" ]; then
 	echo -- building WIN32 project
 
 	mkdir -p ./build/win32
 	cd ./build/win32
 	
-	if [ "$PLATFORM" == "mvs19" ]; then
-		cmake ../../ -G \
-			"Visual Studio 16 2019" \
-			-A \
-			Win32 \
-			-T \
-			v142
-	fi
-
-	if [ "$PLATFORM" == "mvs17" ]; then
-		cmake ../../ -G \
-			"Visual Studio 15 2017" \
-			-A \
-			Win32 \
-			-T \
-			v141
-	fi
+	cmake ../../ -G \
+		"Visual Studio 16 2019" \
+		-A \
+		Win32 \
+		-T \
+		v142 \
+		-DCMAKE_CONFIGURATION_TYPES="Release;Debug;" \
+		-DCMAKE_GENERATOR_PLATFORM=x64 \
+		-DPLATFORM=WINDOWS
 fi

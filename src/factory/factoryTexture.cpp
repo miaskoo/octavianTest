@@ -3,7 +3,11 @@
 #include <iostream>
 #include <filesystem>
 #include <assert.h>
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
 #include <freeglut/freeglut.h>
+#endif
 
 void factoryTexture::loadTexturs() {
 #ifdef MACOS
@@ -16,6 +20,9 @@ void factoryTexture::loadTexturs() {
     for (const auto& name : names) {
         auto buildPatch = std::filesystem::absolute("." + dirSymbols);
         auto projectPatch = buildPatch.parent_path().parent_path().parent_path();
+#if MACOS
+        projectPatch = projectPatch.parent_path().parent_path();
+#endif
         auto needDir = projectPatch.string();
         needDir += dirResource + name;
         nameToTex[name] = SOIL_load_OGL_texture(needDir.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, 0);

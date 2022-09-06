@@ -23,7 +23,9 @@ void constructorWindow::initWindow(int argc, char **argv) {
     sRender.setWindowSize(screenW, screenH);
     srand(time(0U));
     glutCreateWindow("test");
+#ifndef MACOS
     glewInit();
+#endif
 }
 
 void constructorWindow::initResource() {

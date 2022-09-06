@@ -1,6 +1,10 @@
 #include "systemRender.h"
 #include "entity.h"
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
 #include "freeglut/glut.h"
+#endif
 
 void systemRender::setOrthographic() {
     if (ortho) {
