@@ -5,8 +5,8 @@
 #include "actionChangeColor.h"
 #include "actionSequence.h"
 
-actionBase* factoryAction::createRotateAction(vec3f axis, float angle, int time, quaternion startRotate, std::function<void()> callback) {
-    return new actionRotate(axis, angle, time, startRotate, callback);
+actionBase* factoryAction::createRotateAction(quaternion startRotate, vec3f axis, float angle, int time, std::function<void()> callback) {
+    return new actionRotate(startRotate, axis, angle, time, callback);
 }
 
 actionBase* factoryAction::createDelayAction(int time, std::function<void()> callback) {

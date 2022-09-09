@@ -7,7 +7,7 @@ class entity;
 class actionRotate : public actionBase {
 public:
     actionRotate() = delete;
-    actionRotate(vec3f aAxis, float angle, int aTime, quaternion aStartRotate, std::function<void()> aCallback = nullptr);
+    actionRotate(quaternion aStartRotate, vec3f aAxis, float aAngle, int aTime, std::function<void()> aCallback = nullptr);
     ~actionRotate() = default;
     
     virtual void update(std::weak_ptr<entity>object, float dt) override;

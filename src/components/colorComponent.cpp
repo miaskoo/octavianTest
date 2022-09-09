@@ -1,35 +1,35 @@
 #include "colorComponent.h"
+#include "glFunctional.h"
 
 void colorComponent::bind() const {
     if (alphaMode) {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glForwarder::setAlphaMode(true);
     }
 }
 
 void colorComponent::unbind() const {
     if (alphaMode) {
-        glDisable(GL_BLEND);
+        glForwarder::setAlphaMode(false);
     }
 }
 
 void colorComponent::use() const {
     if (alphaMode) {
-        glColor4f(color[0], color[1], color[2], color[3]);
+        glForwarder::setColor4(color[0], color[1], color[2], color[3]);
     }
     else {
-        glColor3f(color[0], color[1], color[2]);
+        glForwarder::setColor3(color[0], color[1], color[2]);
     }
 }
 
-void colorComponent::setColor(float r, float g, float b) {
+void colorComponent::setColor(unsigned int r, unsigned int g, unsigned int b) {
     color[0] = r;
     color[1] = g;
     color[2] = b;
     markDirty();
 }
 
-void colorComponent::setColor(float r, float g, float b, float a) {
+void colorComponent::setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a) {
     color[0] = r;
     color[1] = g;
     color[2] = b;

@@ -1,6 +1,14 @@
 #include "transformComponent.h"
 #include "entity.h"
 
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
+#include "glew/glew.h"
+#include "freeglut/freeglut.h"
+#endif
+
+
 transformComponent::transformComponent() {
     for (size_t n = 0; n < 16; n++) {
         cashRotate[n] = 0.0f;
@@ -10,10 +18,12 @@ transformComponent::transformComponent() {
 vec3f transformComponent::getCashPos() const {
     return cashPos;
 }
+
 vec3f transformComponent::getCashSize() const {
     return cashSize;
 }
-GLfloat const* transformComponent::getCashRotate() const {
+
+float const* transformComponent::getCashRotate() const {
     return cashRotate;
 }
 

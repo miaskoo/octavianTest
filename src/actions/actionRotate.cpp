@@ -1,9 +1,9 @@
 #include "actionRotate.h"
 #include "transformComponent.h"
 
-actionRotate::actionRotate(vec3f aAxis, float angle, int aTime, quaternion aStartRotate, std::function<void()> aCallback) :
+actionRotate::actionRotate(quaternion aStartRotate, vec3f aAxis, float aAngle, int aTime, std::function<void()> aCallback) :
 actionBase(aCallback),
-destination(angle),
+destination(aAngle),
 axis(aAxis),
 fullTime(aTime),
 time(0),
@@ -20,13 +20,13 @@ void actionRotate::update(std::weak_ptr<entity> object, float dt)  {
     }
     auto percent = time / fullTime;
     if (auto pObject = object.lock()) {
-        pObject->getComponent<transformComponent>()->setRotate(startRotate * quaternion::getFromEuler(axis, destination * percent));
+        pObject->getComponent<transformComponentInterface>()->setRotate(startRotate * quaternion::getFromEuler(axis, destination * percent));
     }
 }
 
 void actionRotate::end(std::weak_ptr<entity> object) {
     if (auto pObject = object.lock()) {
-        pObject->getComponent<transformComponent>()->setRotate(startRotate * quaternion::getFromEuler(axis, destination));
+        pObject->getComponent<transformComponentInterface>()->setRotate(startRotate * quaternion::getFromEuler(axis, destination));
     }
     if (callback) {
      callback();

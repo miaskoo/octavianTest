@@ -11,7 +11,29 @@ enum class tAnchor{x = 0U, y = 1U, z = 2U};
 enum class tPivot{x = 0U, y = 1U, z = 2U};
 enum class tScale{x = 0U, y = 1U, z = 2U};
 
-class transformComponentInterface {
+class transformComponent : public componentBase<componentId::TRANSFORM> {
+public:
+    transformComponent();
+    ~transformComponent() = default;
+    
+    vec3f getCashPos() const;
+    vec3f getCashSize() const;
+    float const* getCashRotate() const;
+    
+    void setCashPos(vec3f aPos);
+    void setCashSize(vec3f aSize);
+    void setCashRotate(float* aRotate);
+
+    void bind() const override;
+    void unbind() const override;
+    void use() const override {}
+private:
+    vec3f cashPos;
+    vec3f cashSize;
+    float cashRotate[16];
+};
+
+class transformComponentInterface : public transformComponent {
 public:
     virtual vec3f getPos() const = 0;
     virtual vec3f getAnchor() const = 0;
@@ -49,68 +71,8 @@ protected:
     virtual ~transformComponentInterface() = default;
 };
 
-class transformComponent : public componentBase<componentId::TRANSFORM>, public transformComponentInterface {
-public:
-    transformComponent();
-    ~transformComponent() = default;
-    
-    vec3f getCashPos() const;
-    vec3f getCashSize() const;
-    GLfloat const* getCashRotate() const;
-    
-    void setCashPos(vec3f aPos);
-    void setCashSize(vec3f aSize);
-    void setCashRotate(float* aRotate);
-
-    void bind() const override;
-    void unbind() const override;
-    void use() const override {}
-private:
-    vec3f cashPos;
-    vec3f cashSize;
-    GLfloat cashRotate[16];
-};
-
-class transformComponentEmptyInterface : public transformComponent {
-public:
-    transformComponentEmptyInterface() = default;
-    ~transformComponentEmptyInterface() = default;
-
-    virtual vec3f getPos() const override {return {};}
-    virtual vec3f getAnchor() const override {return {};}
-    virtual vec3f getPivot() const override {return {};}
-    virtual vec3f getScale() const override {return {};}
-    virtual vec3f getSize() const override {return {};}
-
-    virtual float getPos(tPos typePos) const override {return {};}
-    virtual float getAnchor(tAnchor typeAnchor) const override {return {};}
-    virtual float getPivot(tPivot typePivot) const override {return {};}
-    virtual float getScale(tScale typeScale) const override {return {};}
-    virtual float getSize(tSize typeSize) const override {return {};}
-    
-    virtual void setPos(const vec3f& aPos) override {}
-    virtual void setAnchor(const vec3f& aPos) override {}
-    virtual void setPivot(const vec3f& aPos) override {}
-    virtual void setScale(const vec3f& aPos) override {}
-    virtual void setSize(const vec3f& aPos) override {}
-    
-    virtual void setPos(tPos type, float aValue) override {}
-    virtual void setAnchor(tAnchor type, float aValue) override {}
-    virtual void setPivot(tPivot type, float aValue) override {}
-    virtual void setScale(tScale type, float aValue) override {}
-    virtual void setSize(tSize type, float aValue) override {}
-    
-    virtual quaternion getRotate() override {return {};}
-    virtual void setRotate(int x, int y, int z) override {}
-    virtual void setRotate(const quaternion &aRotate) override {}
-    
-    virtual vec3f getRealPos(size_t countDimension, std::weak_ptr<entity> parent) override {return {};}
-    
-    virtual void updateCashTransform(std::weak_ptr<entity> wThis) override {};
-};
-
 template <typename T>
-class transformComponentMain : public transformComponent {
+class transformComponentMain : public transformComponentInterface {
 public:
     transformComponentMain() = default;
     ~transformComponentMain() = default;

@@ -1,23 +1,22 @@
 #include "textureComponent.h"
+#include "glFunctional.h"
 
-void textureComponent::setTexIdx(GLuint aTexIdx) {
+void textureComponent::setTexIdx(unsigned int aTexIdx) {
     texIdx = aTexIdx;
     markDirty();
 }
 
-void textureComponent::setShaderIdx(GLuint aShaderIdx) {
+void textureComponent::setShaderIdx(unsigned int aShaderIdx) {
     shaderIdx = aShaderIdx;
     markDirty();
 }
 
 void textureComponent::bind() const {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texIdx);
-    glUseProgram(shaderIdx);
+    glForwarder::bind2DTexture(texIdx);
+    glForwarder::bindShaderProgram(shaderIdx);
 }
 
 void textureComponent::unbind() const {
-    glUseProgram(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
+    glForwarder::unbindShaderProgram();
+    glForwarder::unbind2DTexture();
 }

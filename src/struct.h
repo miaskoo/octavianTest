@@ -105,6 +105,20 @@ struct vec {
         return a.getModule() * b.getModule() * sinf(getAngle(a, b));
     }
     
+    static vec getLerp(const vec& a, const vec& b, float t) {
+        if (t > 1.f) {
+            t = 1.f;
+        }
+        if (t < 0.f) {
+            t = 0.f;
+        }
+        auto c = a + (b - a);
+        for (size_t n = 0U; n < countVec; n++) {
+            c[n] *= t;
+        }
+        return c;
+    }
+    
     vec operator* (const vec& aValue) {
         vec result;
         for (size_t n = 0U; n < countVec; n++) {

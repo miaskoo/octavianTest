@@ -6,14 +6,14 @@ class bufferComponent : public componentBase<componentId::BUFFER> {
 public:
     bufferComponent() = default;
     ~bufferComponent() = default;
-    void setBuffIdx(GLuint aBuffIdx);
-    void setBuffSize(GLuint aBuffSize);
+    void setBuffIdx(unsigned int aBuffIdx);
+    void setBuffSize(unsigned int aBuffSize);
     virtual void bind() const override;
     virtual void unbind() const override;
     virtual void use() const override;
     void setCullface(bool value) const;
 private:
-    GLuint buffIdx = 0;
-    GLuint buffSize = 0;
+    unsigned int buffIdx = 0;
+    unsigned int buffSize = 0;
 };
 

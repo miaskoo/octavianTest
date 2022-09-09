@@ -15,6 +15,14 @@
 #include <ctime>
 #include <thread>
 
+#ifdef MACOS
+#include "GLUT/glut.h"
+#else
+#include "glew/glew.h"
+#include "freeglut/freeglut.h"
+#endif
+
+
 void constructorWindow::initWindow(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -188,15 +196,15 @@ void constructorWindow::initScene() {
     mainScene->addChild(s);
 
     auto uiNode = fEntity.createNode({-200.f,-100.f});
-    uiNode->getComponent<transformComponent>()->setAnchor({1.f, 1.f});
+    uiNode->getComponent<transformComponentInterface>()->setAnchor({1.f, 1.f});
     fpsLabel = fEntity.createLabel();
     timeLabel = fEntity.createLabel({0.f,-20.f});
     mousePosLabel = fEntity.createLabel({0.f, 20.f});
     mainScene->addChild(uiNode);
 
-    fpsLabel->getComponent<transformComponent>()->setPivot(tPivot::x, 1.f);
-    timeLabel->getComponent<transformComponent>()->setPivot(tPivot::x, 1.f);
-    mousePosLabel->getComponent<transformComponent>()->setPivot(tPivot::x, 1.f);
+    fpsLabel->getComponent<transformComponentInterface>()->setPivot(tPivot::x, 1.f);
+    timeLabel->getComponent<transformComponentInterface>()->setPivot(tPivot::x, 1.f);
+    mousePosLabel->getComponent<transformComponentInterface>()->setPivot(tPivot::x, 1.f);
 
     uiNode->addChild(fpsLabel);
     uiNode->addChild(timeLabel);
@@ -207,21 +215,21 @@ void constructorWindow::initScene() {
         fTexture.getTextureIdx("wait.png"),
         fTexture.getTextureIdx("hover.png"),
         fTexture.getTextureIdx("press.png"));
-    buttonPlay->getComponent<transformComponent>()->setAnchor(tAnchor::y, 0.8f);
+    buttonPlay->getComponent<transformComponentInterface>()->setAnchor(tAnchor::y, 0.8f);
     mainScene->addChild(buttonPlay);
     
     auto labelButtonPlay = fEntity.createLabel({0, 25}, "TOUCH ME");
-    labelButtonPlay->getComponent<transformComponent>()->setAnchor({0.5f,0.5f});
-    labelButtonPlay->getComponent<transformComponent>()->setPivot({0.5f,0.5f});
-    labelButtonPlay->getComponent<transformComponent>()->setScale({2.f, 2.f});
+    labelButtonPlay->getComponent<transformComponentInterface>()->setAnchor({0.5f,0.5f});
+    labelButtonPlay->getComponent<transformComponentInterface>()->setPivot({0.5f,0.5f});
+    labelButtonPlay->getComponent<transformComponentInterface>()->setScale({2.f, 2.f});
     buttonPlay->addChild(labelButtonPlay);
     
     std::weak_ptr<entity> labelWeak = labelButtonPlay;
     
     auto addActionChangeToLabel = [this, labelWeak](){
-        vec4f yellowColor = {1,1,0,1};
-        vec4f blueColor = {0,0,1,1};
-        vec4f purpureColor = {1,0,1,1};
+        vec4f yellowColor = {255,255,0,255};
+        vec4f blueColor = {0,0,255,255};
+        vec4f purpureColor = {255,0,255,255};
         int timeChangeColor = 1000;
         
         if (auto labelButtonPlay = labelWeak.lock()) {
@@ -258,7 +266,7 @@ void constructorWindow::initScene() {
         auto component = torus->getComponent<textureComponent>();
         component->setTexIdx(fTexture.getTextureIdx("slotTorus.png"));
         component->setShaderIdx(fTexture.getShaderTextureIdx());
-        auto tComponentTorus = torus->getComponent<transformComponent>();
+        auto tComponentTorus = torus->getComponent<transformComponentInterface>();
         tComponentTorus->setRotate(tComponentTorus->getRotate() * quaternion::getFromEuler(quaternion::axisX, 22.5f));
         mainScene->addChild(torus);
         
@@ -266,8 +274,8 @@ void constructorWindow::initScene() {
         
         rotateTorusAction[n] = [this](std::weak_ptr<entity> torusWeak, float speed){
             if (auto torus = torusWeak.lock()) {
-                quaternion startRotate = torus->getComponent<transformComponent>()->getRotate();
-                auto actionRot = fAction.createRotateAction(quaternion::axisX, -360.f, speed, startRotate);
+                quaternion startRotate = torus->getComponent<transformComponentInterface>()->getRotate();
+                auto actionRot = fAction.createRotateAction(startRotate, quaternion::axisX, -360.f, speed);
                 auto actionRep = fAction.createRepeatInfinityAction(actionRot);
                 torus->addAction(actionRep);
             }
@@ -287,7 +295,7 @@ void constructorWindow::initScene() {
                     auto needRotate = quaternion::getFromEuler3(0, 90, 0);
                     auto angle = (rand() % 6) * (360 / 8);
                     needRotate = needRotate * quaternion::getFromEuler(quaternion::axisX, 22.5f + angle);
-                    torus->getComponent<transformComponent>()->setRotate(needRotate);
+                    torus->getComponent<transformComponentInterface>()->setRotate(needRotate);
                 }
             }));
         }
@@ -302,7 +310,7 @@ void constructorWindow::initScene() {
         }
         if (auto labelButtonPlay = labelWeak.lock()) {
             labelButtonPlay->clearAllActions();
-            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, 1);
+            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, 255);
         }
     });
 }

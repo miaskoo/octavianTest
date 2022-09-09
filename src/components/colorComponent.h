@@ -8,12 +8,12 @@ public:
     colorComponent() = default;
     ~colorComponent() = default;
     void setAlphaMode(bool value);
-    void setColor(float r, float g, float b);
-    void setColor(float r, float g, float b, float a);
+    void setColor(unsigned int r, unsigned int g, unsigned int b);
+    void setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a);
     virtual void bind() const override;
     virtual void unbind() const override;
     virtual void use() const override;
 private:
-    vec4f color = {1.f, 1.f, 1.f, 1.f};
+    unsigned int color[4] = {255, 255, 255, 255};
     bool alphaMode = true;
 };

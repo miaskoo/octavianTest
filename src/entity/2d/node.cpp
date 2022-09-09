@@ -6,12 +6,12 @@ node::node() : entity(dimension::TWO) {
 }
 
 void node::updateCash() {
-    getComponent<transformComponent>()->updateCashTransform(wThis);
+    getComponent<transformComponentInterface>()->updateCashTransform(wThis);
     if (auto cash = getFreeCash()) {
         copyComponent(cash->getComponent<transformComponent>());
     }
 }
 
 node::nodeCash::nodeCash() {
-    addComponent<transformComponentEmptyInterface>();
+    addComponent<transformComponent>();
 }

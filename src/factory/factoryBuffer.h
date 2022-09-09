@@ -4,18 +4,12 @@
 #include <map>
 #include <string>
 #include <vector>
-#ifdef MACOS
-#include "GLUT/glut.h"
-#else
-#include "glew/glew.h"
-#include "freeglut/freeglut.h"
-#endif
 
 struct bufferIdx {
-    GLuint vbo;
-    GLuint vao;
-    GLuint ebo;
-    GLuint countIdx;
+    unsigned int vbo;
+    unsigned int vao;
+    unsigned int ebo;
+    unsigned int countIdx;
 };
 
 class factoryBuffer {

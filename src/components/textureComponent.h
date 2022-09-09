@@ -6,12 +6,12 @@ class textureComponent : public componentBase<componentId::TEXTURE> {
 public:
     textureComponent() = default;
     ~textureComponent() = default;
-    void setTexIdx(GLuint aTexIdx);
-    void setShaderIdx(GLuint aShaderIdx);
+    void setTexIdx(unsigned int aTexIdx);
+    void setShaderIdx(unsigned int aShaderIdx);
     virtual void bind() const override;
     virtual void unbind() const override;
     virtual void use() const override {};
 protected:
-    GLuint texIdx = 0;
-    GLuint shaderIdx = 0;
+    unsigned int texIdx = 0;
+    unsigned int shaderIdx = 0;
 };

@@ -1,17 +1,8 @@
 #include "labelComponent.h"
-#ifdef MACOS
-#include "GLUT/glut.h"
-#else
-#include "freeglut/glut.h"
-#endif
+#include "glFunctional.h"
 
 void labelComponent::use() const {
-    int xChar = 0;
-    for (auto& c : text) {
-        glRasterPos2f(xChar, 0);
-        glutBitmapCharacter(font, c);
-        xChar = xChar + glutBitmapWidth(font, c);
-    }
+    glForwarder::drawBitmapText(text.c_str(), text.length(), font);
 }
 
 void labelComponent::setText(const std::string &aText) {

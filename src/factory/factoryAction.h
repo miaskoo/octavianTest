@@ -9,7 +9,7 @@ class factoryAction {
 public:
     factoryAction() = default;
     ~factoryAction() = default;
-    actionBase* createRotateAction(vec3f axis, float angle, int time, quaternion startRotate, std::function<void()> callback = nullptr);
+    actionBase* createRotateAction(quaternion startRotate, vec3f axis, float angle, int time, std::function<void()> callback = nullptr);
     actionBase* createDelayAction(int time, std::function<void()> callback = nullptr);
     actionBase* createRepeatAction(actionBase* action, int count, std::function<void()> callback = nullptr);
     actionBase* createRepeatInfinityAction(actionBase* action, std::function<void()> callback = nullptr);
