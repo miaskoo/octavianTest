@@ -41,7 +41,7 @@ void label::updateCash() {
     auto currentLabelComponent = getComponent<labelComponent>();
     auto currentTextLen = currentLabelComponent->getText().length();
     
-    auto currentTransformComponent = getComponent<transformComponentInterface>();
+    auto currentTransformComponent = getTransformComponent();
 
     if (busyTextLen != currentTextLen) {
         auto newSize = calcAutoSize(currentLabelComponent->getText(), currentLabelComponent->getFont());

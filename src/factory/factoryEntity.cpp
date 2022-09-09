@@ -12,7 +12,7 @@
 std::shared_ptr<entity> factoryEntity::createNode(vec2f pos, vec2f size) {
     auto result = std::make_shared<node>();
     result->setWeakPointerThis(result);
-    auto component = result->getComponent<transformComponentInterface>();
+    auto component = result->getTransformComponent();
     component->setPos(pos);
     component->setSize(size);
     component->setAnchor({0.5f, 0.5f});
@@ -25,7 +25,7 @@ std::shared_ptr<entity> factoryEntity::createNode(vec2f pos, vec2f size) {
 std::shared_ptr<entity> factoryEntity::createLabel(vec2f pos, const std::string& text, void* font) {
     auto result = std::make_shared<label>();
     result->setWeakPointerThis(result);
-    auto component = result->getComponent<transformComponentInterface>();
+    auto component = result->getTransformComponent();
     component->setPos(pos);
     component->setAnchor({0.5f, 0.5f});
     component->setPivot({0.5f, 0.5f});
@@ -39,7 +39,7 @@ std::shared_ptr<entity> factoryEntity::createLabel(vec2f pos, const std::string&
 std::shared_ptr<entity> factoryEntity::createQuadrilateral(vec3f pos, vec3f size, quaternion rotate) {
     auto result = std::make_shared<object3d>();
     result->setWeakPointerThis(result);
-    auto component = result->getComponent<transformComponentInterface>();
+    auto component = result->getTransformComponent();
     component->setPos(pos);
     component->setSize(size);
     component->setRotate(rotate);
@@ -53,7 +53,7 @@ std::shared_ptr<entity> factoryEntity::createQuadrilateral(vec3f pos, vec3f size
 std::shared_ptr<entity> factoryEntity::createTorus(vec3f pos, vec3f size, int countSector, quaternion rotate) {
     auto result = std::make_shared<object3d>();
     result->setWeakPointerThis(result);
-    auto component = result->getComponent<transformComponentInterface>();
+    auto component = result->getTransformComponent();
     component->setPos(pos);
     component->setSize(size);
     component->setRotate(rotate);
@@ -71,7 +71,7 @@ std::shared_ptr<entity> factoryEntity::createTorus(vec3f pos, vec3f size, int co
 std::shared_ptr<entity> factoryEntity::createSprite(vec2f pos, vec2f size) {
     auto result = std::make_shared<sprite>();
     result->setWeakPointerThis(result);
-    auto component = result->getComponent<transformComponentInterface>();
+    auto component = result->getTransformComponent();
     component->setPos(pos);
     component->setSize(size);
     component->setAnchor({0.5f,0.5f});
@@ -84,7 +84,7 @@ std::shared_ptr<entity> factoryEntity::createSprite(vec2f pos, vec2f size) {
 std::shared_ptr<entity> factoryEntity::createButton(vec2f pos, vec2f size) {
     std::shared_ptr<entity> result = std::make_shared<button>();
     result->setWeakPointerThis(result);
-    auto component = result->getComponent<transformComponentInterface>();
+    auto component = result->getTransformComponent();
     component->setPos(pos);
     component->setSize(size);
     component->setScale({1.f, 1.f});

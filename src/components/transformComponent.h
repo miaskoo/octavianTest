@@ -33,7 +33,7 @@ private:
     float cashRotate[16];
 };
 
-class transformComponentInterface : public transformComponent {
+class transformComponentInterface {
 public:
     virtual vec3f getPos() const = 0;
     virtual vec3f getAnchor() const = 0;
@@ -72,7 +72,7 @@ protected:
 };
 
 template <typename T>
-class transformComponentMain : public transformComponentInterface {
+class transformComponentMain : public transformComponentInterface, public transformComponent {
 public:
     transformComponentMain() = default;
     ~transformComponentMain() = default;
@@ -133,52 +133,52 @@ public:
         for (size_t n = 0U; n < pos.size(); n++) {
             pos[n] = aValue[n];
         }
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setSize(const vec3f& aValue) override {
         for (size_t n = 0U; n < size.size(); n++) {
             size[n] = aValue[n];
         }
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual  void setAnchor(const vec3f& aValue) override {
         for (size_t n = 0U; n < size.size(); n++) {
             anchor[n] = aValue[n];
         }
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setPivot(const vec3f& aValue) override {
         for (size_t n = 0U; n < size.size(); n++) {
             pivot[n] = aValue[n];
         }
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setScale(const vec3f& aValue) override {
         for (size_t n = 0U; n < size.size(); n++) {
             scale[n] = aValue[n];
         }
-        markDirty();
+        transformComponent::markDirty();
     }
     
     virtual void setPos(tPos type, float aValue) override {
         pos[static_cast<size_t>(type)] = aValue;
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setSize(tSize type, float aValue) override {
         size[static_cast<size_t>(type)] = aValue;
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setAnchor(tAnchor type, float aValue) override {
         anchor[static_cast<size_t>(type)] = aValue;
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setPivot(tPivot type, float aValue) override {
         pivot[static_cast<size_t>(type)] = aValue;
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setScale(tScale type, float aValue) override {
         scale[static_cast<size_t>(type)] = aValue;
-        markDirty();
+        transformComponent::markDirty();
     }
     
     virtual quaternion getRotate() override {
@@ -186,11 +186,11 @@ public:
     }
     virtual void setRotate(int x, int y, int z) override {
         rotate = quaternion::getFromEuler3(x, y, z);
-        markDirty();
+        transformComponent::markDirty();
     }
     virtual void setRotate(const quaternion &aRotate) override {
         rotate = aRotate;
-        markDirty();
+        transformComponent::markDirty();
     }
     
     virtual vec3f getRealPos(size_t countDimension, std::weak_ptr<entity> parent) override {
@@ -224,7 +224,7 @@ public:
     }
     
     virtual void updateCashTransform(std::weak_ptr<entity> wThis) override {
-        if (isDirty()) {
+        if (transformComponent::isDirty()) {
             if (auto sThis = wThis.lock()) {
                 setCashPos(getRealPos(static_cast<size_t>(sThis->getDimension()), sThis->getParent()));
                 setCashSize(getSize() * getScale());

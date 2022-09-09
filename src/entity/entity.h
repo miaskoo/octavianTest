@@ -5,6 +5,8 @@
 #include "componentContainer.h"
 #include "actionBase.h"
 
+class transformComponentInterface;
+
 enum class dimension {TWO = 2, THREE = 3, NONE = 0};
 
 class entityCash : public componentContainer {
@@ -50,6 +52,8 @@ public:
     
     std::shared_ptr<entityCash> getFreeCash();
     std::shared_ptr<entityCash> getBusyCash();
+    
+    transformComponentInterface* getTransformComponent();
 protected:
     entity() = delete;
     entity(dimension aType);

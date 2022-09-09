@@ -3,6 +3,7 @@
 #include "labelComponent.h"
 #include "bufferComponent.h"
 #include "textureComponent.h"
+#include "transformComponent.h"
 #include <iostream>
 
 entity::entity(dimension aType) : type(aType) {}
@@ -172,4 +173,9 @@ void entity::setIgnoreSorting(bool value) {
 
 bool entity::isIgnoreSorting() {
     return ignoreSorting;
+}
+
+transformComponentInterface* entity::getTransformComponent() {
+    auto component = getComponent<transformComponent>();
+    return dynamic_cast<transformComponentInterface*>(component);
 }

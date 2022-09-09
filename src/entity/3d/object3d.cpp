@@ -17,7 +17,7 @@ void object3d::createCash() {
 }
 
 void object3d::updateCash() {
-    getComponent<transformComponentInterface>()->updateCashTransform(wThis);
+    getTransformComponent()->updateCashTransform(wThis);
     
     copyComponent(getFreeCash()->getComponent<transformComponent>());
     copyComponent(getFreeCash()->getComponent<bufferComponent>());

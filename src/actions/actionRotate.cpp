@@ -20,13 +20,13 @@ void actionRotate::update(std::weak_ptr<entity> object, float dt)  {
     }
     auto percent = time / fullTime;
     if (auto pObject = object.lock()) {
-        pObject->getComponent<transformComponentInterface>()->setRotate(startRotate * quaternion::getFromEuler(axis, destination * percent));
+        pObject->getTransformComponent()->setRotate(startRotate * quaternion::getFromEuler(axis, destination * percent));
     }
 }
 
 void actionRotate::end(std::weak_ptr<entity> object) {
     if (auto pObject = object.lock()) {
-        pObject->getComponent<transformComponentInterface>()->setRotate(startRotate * quaternion::getFromEuler(axis, destination));
+        pObject->getTransformComponent()->setRotate(startRotate * quaternion::getFromEuler(axis, destination));
     }
     if (callback) {
      callback();
