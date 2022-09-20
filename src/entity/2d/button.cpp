@@ -5,13 +5,13 @@
 
 button::button() {
     addComponent<colorComponent>();
-    addComponent<clickComponent>();
+    //addComponent<clickComponent>();
 }
 
-void button::updateCash() {
-    node::updateCash();
-    copyComponent(getFreeCash()->getComponent<colorComponent>());
-    copyComponent(getFreeCash()->getComponent<buttonComponent>());
+void button::updateCash(size_t freeCashIdx, size_t busyCashIdx) {
+    node::updateCash(freeCashIdx, busyCashIdx);
+    copyComponent(getCash(freeCashIdx)->getComponent<colorComponent>());
+    //copyComponent(getFreeCash()->getComponent<buttonComponent>());
 }
 
 void button::createCash() {
@@ -21,8 +21,8 @@ void button::createCash() {
 }
 
 void button::updateWithMousePos(int x, int y, stateMouse state) {
-    auto bComponent = getComponent<clickComponent>();
-    auto prevState = bComponent->getState();
+//    auto bComponent = getComponent<clickComponent>();
+//    auto prevState = bComponent->getState();
     auto newState = stateButton::WAIT;
     auto component = getComponent<transformComponent>();
     vec3f pos = component->getCashPos();
@@ -40,28 +40,28 @@ void button::updateWithMousePos(int x, int y, stateMouse state) {
     if (state == stateMouse::CLICK_OUT) {
         isClicked = false;
     }
-    if (bComponent->isClickable()) {
-        if (x > x1 && x < x2 && y > y1 && y < y2) {
-            if (state == stateMouse::CLICK) {
-                newState = stateButton::PRESS;
-                if (!isClicked && prevState != newState) {
-                    isClicked = true;
-                    bComponent->use();
-                }
-            }
-            else {
-                newState = stateButton::HOVER;
-            }
-        }
-    }
-    else {
-        newState = stateButton::LOCK;
-    }
+//    if (bComponent->isClickable()) {
+//        if (x > x1 && x < x2 && y > y1 && y < y2) {
+//            if (state == stateMouse::CLICK) {
+//                newState = stateButton::PRESS;
+//                if (!isClicked && prevState != newState) {
+//                    isClicked = true;
+//                    //bComponent->use();
+//                }
+//            }
+//            else {
+//                newState = stateButton::HOVER;
+//            }
+//        }
+//    }
+//    else {
+//        newState = stateButton::LOCK;
+//    }
     
-    if (prevState != newState) {
-        bComponent->setState(newState);
-        markDirty();
-    }
+//    if (prevState != newState) {
+//        //bComponent->setState(newState);
+//        markDirty();
+//    }
     if (newState != stateButton::PRESS) {
         entity::updateWithMousePos(x, y, state);
     }
@@ -69,5 +69,5 @@ void button::updateWithMousePos(int x, int y, stateMouse state) {
 
 button::buttonCash::buttonCash() {
     addComponent<colorComponent>();
-    addComponent<buttonComponent>();
+    //addComponent<buttonComponent>();
 }

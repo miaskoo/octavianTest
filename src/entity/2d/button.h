@@ -5,7 +5,7 @@ public:
     button();
     ~button() = default;
     virtual void createCash() override;
-    virtual void updateCash() override;
+    virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) override;
     virtual void updateWithMousePos(int x, int y, stateMouse state) override;
 protected:
     class buttonCash : public nodeCash {

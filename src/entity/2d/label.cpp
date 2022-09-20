@@ -1,7 +1,8 @@
 #include "label.h"
 #include "transformComponent.h"
-#include "labelComponent.h"
 #include "colorComponent.h"
+#include "renderComponent.h"
+#include "systemRender.h"
 
 #ifdef MACOS
 #include "GLUT/glut.h"
@@ -12,9 +13,9 @@
 
 
 label::label() {
-    auto component = addComponent<labelComponent>();
-    component->setFont(GLUT_BITMAP_HELVETICA_18);
     addComponent<colorComponent>();
+    addComponent<labelComponent>();
+    systemRender::getInstance()->registerEntity(this);
 }
 
 void label::createCash() {
@@ -35,11 +36,11 @@ vec2f label::calcAutoSize(const std::string& text, void* font) const {
     return result;
 }
 
-void label::updateCash() {
-    auto busyLabelComponent = getBusyCash()->getComponent<labelComponent>();
-    auto busyTextLen = busyLabelComponent->getText().length();
+void label::updateCash(size_t freeCashIdx, size_t busyCashIdx) {
+    auto busyLabelComponent = getCash(busyCashIdx)->getComponent<labelComponent>();
+    auto busyTextLen = busyLabelComponent->getLenText();
     auto currentLabelComponent = getComponent<labelComponent>();
-    auto currentTextLen = currentLabelComponent->getText().length();
+    auto currentTextLen = currentLabelComponent->getLenText();
     
     auto currentTransformComponent = getTransformComponent();
 
@@ -48,14 +49,14 @@ void label::updateCash() {
         currentTransformComponent->setSize(newSize);
     }
     currentTransformComponent->updateCashTransform(wThis);
-    auto freeTransformComponent = getFreeCash()->getComponent<transformComponent>();
+    auto freeTransformComponent = getCash(freeCashIdx)->getComponent<transformComponent>();
     copyComponent(freeTransformComponent);
     freeTransformComponent->setCashSize(currentTransformComponent->getScale());
-    copyComponent(getFreeCash()->getComponent<labelComponent>());
-    copyComponent(getFreeCash()->getComponent<colorComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<renderComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<colorComponent>());
 }
 
 label::labelCash::labelCash() {
-    addComponent<labelComponent>();
     addComponent<colorComponent>();
+    addComponent<labelComponent>();
 }

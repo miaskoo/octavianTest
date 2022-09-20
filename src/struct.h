@@ -5,6 +5,8 @@
 
 const float RADIANS = 57.2958f;
 enum class stateMouse {IDLE = 0U, CLICK = 1U, CLICK_OUT = 2U};
+enum class dimension {TWO = 2U, THREE = 3U, NONE = 0U};
+enum class typeCash {FREE = 0U, BUSY = 1U, COUNT = 2U};
 static float valueEmpty = 0.0f;
 
 template <size_t countVec>

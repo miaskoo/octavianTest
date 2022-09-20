@@ -10,9 +10,8 @@ public:
     void setAlphaMode(bool value);
     void setColor(unsigned int r, unsigned int g, unsigned int b);
     void setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a);
-    virtual void bind() const override;
-    virtual void unbind() const override;
-    virtual void use() const override;
+    unsigned int* getColor();
+    bool isAlphaMode();
 private:
     unsigned int color[4] = {255, 255, 255, 255};
     bool alphaMode = true;

@@ -7,7 +7,7 @@ public:
     ~object3d() = default;
     virtual void createCash() override;
 protected:
-    virtual void updateCash() override;
+    virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) override;
     
     class object3dCash : public entityCash {
     public:

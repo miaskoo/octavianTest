@@ -11,12 +11,10 @@ void textureComponent::setShaderIdx(unsigned int aShaderIdx) {
     markDirty();
 }
 
-void textureComponent::bind() const {
-    glForwarder::bind2DTexture(texIdx);
-    glForwarder::bindShaderProgram(shaderIdx);
+unsigned int textureComponent::getTexIdx() const {
+    return texIdx;
 }
 
-void textureComponent::unbind() const {
-    glForwarder::unbindShaderProgram();
-    glForwarder::unbind2DTexture();
+unsigned int textureComponent::getShaderIdx() const {
+    return shaderIdx;
 }

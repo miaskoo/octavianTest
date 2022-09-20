@@ -8,7 +8,7 @@ public:
     node();
     ~node() = default;
 protected:
-    virtual void updateCash() override;
+    virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) override;
     
     class nodeCash : public entityCash {
     public:

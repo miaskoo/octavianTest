@@ -6,8 +6,7 @@
 #include "button.h"
 #include "transformComponent.h"
 #include "buttonComponent.h"
-#include "bufferComponent.h"
-#include "labelComponent.h"
+#include "renderComponent.h"
 
 std::shared_ptr<entity> factoryEntity::createNode(vec2f pos, vec2f size) {
     auto result = std::make_shared<node>();

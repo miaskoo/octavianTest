@@ -8,7 +8,7 @@ public:
     ~label() = default;
     virtual void createCash() override;
 protected:
-    void updateCash() override;
+    void updateCash(size_t freeCashIdx, size_t busyCashIdx) override;
     
     class labelCash : public nodeCash {
     public:

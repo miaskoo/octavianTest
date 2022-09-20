@@ -7,7 +7,7 @@ public:
     sprite();
     ~sprite() = default;
     virtual void createCash() override;
-    virtual void updateCash() override;
+    virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) override;
 protected:
     class spriteCash : public nodeCash {
     public:

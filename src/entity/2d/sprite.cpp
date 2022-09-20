@@ -1,18 +1,21 @@
 #include "sprite.h"
 #include "colorComponent.h"
 #include "textureComponent.h"
-#include "spriteComponent.h"
+#include "renderComponent.h"
+#include "systemRender.h"
 
 sprite::sprite() {
     addComponent<colorComponent>();
+    addComponent<textureComponent>();
     addComponent<spriteComponent>();
+    systemRender::getInstance()->registerEntity(this);
 }
 
 
-void sprite::updateCash() {
-    node::updateCash();
-    copyComponent(getFreeCash()->getComponent<colorComponent>());
-    copyComponent(getFreeCash()->getComponent<spriteComponent>());
+void sprite::updateCash(size_t freeCashIdx, size_t busyCashIdx) {
+    node::updateCash(freeCashIdx, busyCashIdx);
+    copyComponent(getCash(freeCashIdx)->getComponent<colorComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<spriteComponent>());
 }
 
 
@@ -24,5 +27,6 @@ void sprite::createCash() {
 
 sprite::spriteCash::spriteCash() {
     addComponent<colorComponent>();
+    addComponent<textureComponent>();
     addComponent<spriteComponent>();
 }

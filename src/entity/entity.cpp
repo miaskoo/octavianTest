@@ -1,12 +1,13 @@
 #include "entity.h"
 #include "transformComponent.h"
-#include "labelComponent.h"
-#include "bufferComponent.h"
 #include "textureComponent.h"
 #include "transformComponent.h"
-#include <iostream>
 
 entity::entity(dimension aType) : type(aType) {}
+
+entity::~entity() {
+    systemRender::getInstance()->unregisterEntity(this);
+}
 
 dimension entity::getDimension() {
     return type;
@@ -56,13 +57,8 @@ std::shared_ptr<entity> entity::getParent() {
     return parent.lock();
 }
 
-std::shared_ptr<entityCash> entity::getFreeCash() {
-    auto cash = cashArray[0].use_count() == 1 ? cashArray[0] : cashArray[1];
-    return cash;
-}
-
-std::shared_ptr<entityCash> entity::getBusyCash() {
-    return cashArray[0].use_count() > 1 ? cashArray[0] : cashArray[1];
+std::shared_ptr<entityCash> entity::getCash(size_t cashIdx) {
+    return cashArray[cashIdx];
 }
 
 const std::vector<std::shared_ptr<entity>>& entity::getChilds() {
@@ -111,36 +107,6 @@ void entity::addAction(actionBase *action) {
 
 void entity::clearAllActions() {
     actions.clear();
-}
-
-void entityCash::setOrtho(bool aOrtho) {
-    ortho = aOrtho;
-}
-
-bool entityCash::isOrtho() {
-    return ortho;
-}
-
-void entityCash::render() {
-    for (const auto& component : components) {
-        if (!component) {
-            continue;
-        }
-        component->bind();
-    }
-    for (const auto& component : components) {
-        if (!component) {
-            continue;
-        }
-        component->use();
-    }
-    for (int n = 0; n < components.size(); n++) {
-        auto& component = components[components.size() - 1 - n];
-        if (!component) {
-            continue;
-        }
-        component->unbind();
-    }
 }
 
 bool entity::isDirty() {

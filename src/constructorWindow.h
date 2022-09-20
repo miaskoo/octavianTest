@@ -35,6 +35,7 @@ private:
     void idleScene();
     void clickWindow(int button, int state, int x, int y);
     void setMousePos(int x, int y);
+    size_t getCashIdx(typeCash type);
     
     const int screenW = 1024;
     const int screenH = 900;
@@ -54,15 +55,18 @@ private:
     std::atomic_int mouseX = 0;
     std::atomic_int mouseY = 0;
     std::atomic<stateMouse> click = stateMouse::IDLE;
-    
-    factoryEntity fEntity;
+
     factoryTexture fTexture;
     factoryAction fAction;
-    systemRender sRender;
+    factoryEntity fEntity;
+    
     std::shared_ptr<scene> mainScene;
     std::shared_ptr<entity> fpsLabel;
     std::shared_ptr<entity> timeLabel;
     std::shared_ptr<entity> mousePosLabel;
+    
+    std::atomic_bool switchCash = false;
+    std::atomic_bool cashDirty = false;
     
     static inline constructorWindow* instance = nullptr;
 };

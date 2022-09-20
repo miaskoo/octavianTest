@@ -8,9 +8,8 @@ public:
     ~textureComponent() = default;
     void setTexIdx(unsigned int aTexIdx);
     void setShaderIdx(unsigned int aShaderIdx);
-    virtual void bind() const override;
-    virtual void unbind() const override;
-    virtual void use() const override {};
+    unsigned int getTexIdx() const;
+    unsigned int getShaderIdx() const;
 protected:
     unsigned int texIdx = 0;
     unsigned int shaderIdx = 0;

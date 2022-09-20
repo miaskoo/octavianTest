@@ -7,17 +7,10 @@
 
 class transformComponentInterface;
 
-enum class dimension {TWO = 2, THREE = 3, NONE = 0};
-
 class entityCash : public componentContainer {
-public:
-    ~entityCash() = default;
-    void render();
-    bool isOrtho();
-    void setOrtho(bool aOrtho);
 protected:
+    ~entityCash() = default;
     entityCash() = default;
-    bool ortho = false;
 };
 
 class entity : public componentContainer {
@@ -25,7 +18,7 @@ class entity : public componentContainer {
     friend class constructorWindow;
 public:
     
-    ~entity() = default;
+    ~entity();
     dimension getDimension();
     
     std::shared_ptr<entity> getParent();
@@ -48,10 +41,9 @@ public:
     void setIgnoreSorting(bool value);
     bool isIgnoreSorting();
     
-    virtual void updateCash() = 0;
+    virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) = 0;
     
-    std::shared_ptr<entityCash> getFreeCash();
-    std::shared_ptr<entityCash> getBusyCash();
+    std::shared_ptr<entityCash> getCash(size_t cashIdx);
     
     transformComponentInterface* getTransformComponent();
 protected:
@@ -65,7 +57,7 @@ protected:
     
     virtual void createCash() {}
     
-    std::array<std::shared_ptr<entityCash>, 2U> cashArray;
+    std::array<std::shared_ptr<entityCash>, static_cast<size_t>(typeCash::COUNT)> cashArray;
     std::weak_ptr<entity> wThis;
 private:
     const dimension type;

@@ -1,27 +1,6 @@
 #include "colorComponent.h"
 #include "glFunctional.h"
 
-void colorComponent::bind() const {
-    if (alphaMode) {
-        glForwarder::setAlphaMode(true);
-    }
-}
-
-void colorComponent::unbind() const {
-    if (alphaMode) {
-        glForwarder::setAlphaMode(false);
-    }
-}
-
-void colorComponent::use() const {
-    if (alphaMode) {
-        glForwarder::setColor4(color[0], color[1], color[2], color[3]);
-    }
-    else {
-        glForwarder::setColor3(color[0], color[1], color[2]);
-    }
-}
-
 void colorComponent::setColor(unsigned int r, unsigned int g, unsigned int b) {
     color[0] = r;
     color[1] = g;
@@ -40,4 +19,12 @@ void colorComponent::setColor(unsigned int r, unsigned int g, unsigned int b, un
 void colorComponent::setAlphaMode(bool value) {
     alphaMode = value;
     markDirty();
+}
+
+bool colorComponent::isAlphaMode() {
+    return alphaMode;
+}
+
+unsigned int* colorComponent::getColor() {
+    return color;
 }

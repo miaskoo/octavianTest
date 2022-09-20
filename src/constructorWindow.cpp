@@ -4,8 +4,9 @@
 #include "scene.h"
 #include "transformComponent.h"
 #include "clickComponent.h"
-#include "labelComponent.h"
 #include "colorComponent.h"
+#include "renderComponent.h"
+#include "textureComponent.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -28,7 +29,7 @@ void constructorWindow::initWindow(int argc, char **argv) {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(0,0);
     glutInitWindowSize(screenW,screenH);
-    sRender.setWindowSize(screenW, screenH);
+    systemRender::getInstance()->setWindowSize(screenW, screenH);
     srand(time(0U));
     glutCreateWindow("test");
 #ifndef MACOS
@@ -79,22 +80,34 @@ void constructorWindow::updateScene(float dt) {
         click.store(stateMouse::IDLE);
     }
     mainScene->update(dt);
-    if (sRender.isDirty()) {
+    if (cashDirty.load()) {
         return;
     }
     bool dirty = false;
     mainScene->checkDirty(mainScene.get(), dirty);
     if (dirty) {
-        auto& cadrForCash = sRender.getCadrForCash();
-        cadrForCash.clear();
-        mainScene->createNewCash(mainScene.get(), cadrForCash);
-        sRender.markDirty();
+        mainScene->updateCash(getCashIdx(typeCash::FREE), getCashIdx(typeCash::BUSY));
+        switchCash.store(!switchCash.load());
+        cashDirty.store(true);
     }
+}
+
+size_t constructorWindow::getCashIdx(typeCash type) {
+    if (switchCash.load()) {
+        if (type == typeCash::FREE) {
+            return static_cast<size_t>(typeCash::BUSY);
+        }
+        return static_cast<size_t>(typeCash::FREE);
+    }
+    return static_cast<size_t>(type);
 }
 
 void constructorWindow::renderScene() {
     if (currentFps < lockFps) {
-        sRender.update();
+        if (cashDirty.load()) {
+            cashDirty.store(false);
+        }
+        systemRender::getInstance()->update(getCashIdx(typeCash::BUSY));
         currentFps++;
     }
 }
@@ -211,10 +224,10 @@ void constructorWindow::initScene() {
     uiNode->addChild(mousePosLabel);
     
     auto buttonPlay = fEntity.createButton({0,0}, {400, 100});
-    buttonPlay->getComponent<buttonComponent>()->setTexIdx(
-        fTexture.getTextureIdx("wait.png"),
-        fTexture.getTextureIdx("hover.png"),
-        fTexture.getTextureIdx("press.png"));
+//    buttonPlay->getComponent<buttonComponent>()->setTexIdx(
+//        fTexture.getTextureIdx("wait.png"),
+//        fTexture.getTextureIdx("hover.png"),
+//        fTexture.getTextureIdx("press.png"));
     buttonPlay->getTransformComponent()->setAnchor(tAnchor::y, 0.8f);
     mainScene->addChild(buttonPlay);
     
@@ -282,37 +295,37 @@ void constructorWindow::initScene() {
         };
     }
     std::weak_ptr<entity> wButton = buttonPlay;
-    buttonPlay->getComponent<clickComponent>()->setClickCallback([this, wButton, wTorusPull, rotateTorusAction, labelWeak, addActionChangeToLabel]() {
-        for (int n = 0; n < 5; n++) {
-            if (rotateTorusAction[n]) {
-                float randSpeed = 1100 - (100 * (rand() % 8));
-                rotateTorusAction[n](wTorusPull[n], randSpeed);
-            }
-            int waitTime = 1000 + 500 * n;
-            mainScene->addAction(fAction.createDelayAction(waitTime, [this, wTorus = wTorusPull[n]](){
-                if (auto torus = wTorus.lock()) {
-                    torus->clearAllActions();
-                    auto needRotate = quaternion::getFromEuler3(0, 90, 0);
-                    auto angle = (rand() % 6) * (360 / 8);
-                    needRotate = needRotate * quaternion::getFromEuler(quaternion::axisX, 22.5f + angle);
-                    torus->getTransformComponent()->setRotate(needRotate);
-                }
-            }));
-        }
-        mainScene->addAction(fAction.createDelayAction(3100, [wButton, labelWeak, addActionChangeToLabel](){
-            if (auto buttonPlay = wButton.lock()) {
-                buttonPlay->getComponent<clickComponent>()->setClickable(true);
-            }
-            addActionChangeToLabel();
-        }));
-        if (auto buttonPlay = wButton.lock()) {
-            buttonPlay->getComponent<clickComponent>()->setClickable(false);
-        }
-        if (auto labelButtonPlay = labelWeak.lock()) {
-            labelButtonPlay->clearAllActions();
-            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, 255);
-        }
-    });
+//    buttonPlay->getComponent<clickComponent>()->setClickCallback([this, wButton, wTorusPull, rotateTorusAction, labelWeak, addActionChangeToLabel]() {
+//        for (int n = 0; n < 5; n++) {
+//            if (rotateTorusAction[n]) {
+//                float randSpeed = 1100 - (100 * (rand() % 8));
+//                rotateTorusAction[n](wTorusPull[n], randSpeed);
+//            }
+//            int waitTime = 1000 + 500 * n;
+//            mainScene->addAction(fAction.createDelayAction(waitTime, [this, wTorus = wTorusPull[n]](){
+//                if (auto torus = wTorus.lock()) {
+//                    torus->clearAllActions();
+//                    auto needRotate = quaternion::getFromEuler3(0, 90, 0);
+//                    auto angle = (rand() % 6) * (360 / 8);
+//                    needRotate = needRotate * quaternion::getFromEuler(quaternion::axisX, 22.5f + angle);
+//                    torus->getTransformComponent()->setRotate(needRotate);
+//                }
+//            }));
+//        }
+//        mainScene->addAction(fAction.createDelayAction(3100, [wButton, labelWeak, addActionChangeToLabel](){
+//            if (auto buttonPlay = wButton.lock()) {
+//                buttonPlay->getComponent<clickComponent>()->setClickable(true);
+//            }
+//            addActionChangeToLabel();
+//        }));
+//        if (auto buttonPlay = wButton.lock()) {
+//            buttonPlay->getComponent<clickComponent>()->setClickable(false);
+//        }
+//        if (auto labelButtonPlay = labelWeak.lock()) {
+//            labelButtonPlay->clearAllActions();
+//            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, 255);
+//        }
+//    });
 }
 
 void constructorWindow::destroyScene() {

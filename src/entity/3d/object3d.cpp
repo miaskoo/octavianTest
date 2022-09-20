@@ -1,13 +1,15 @@
 #include "object3d.h"
 #include "math.h"
 #include "transformComponent.h"
-#include "bufferComponent.h"
 #include "textureComponent.h"
+#include "renderComponent.h"
+#include "systemRender.h"
 
 object3d::object3d() : entity(dimension::THREE) {
     addComponent<transformComponentMain<vec3f>>();
-    addComponent<bufferComponent>();
     addComponent<textureComponent>();
+    addComponent<bufferComponent>();
+    systemRender::getInstance()->registerEntity(this);
 }
 
 void object3d::createCash() {
@@ -16,16 +18,16 @@ void object3d::createCash() {
     }
 }
 
-void object3d::updateCash() {
+void object3d::updateCash(size_t freeCashIdx, size_t busyCashIdx) {
     getTransformComponent()->updateCashTransform(wThis);
     
-    copyComponent(getFreeCash()->getComponent<transformComponent>());
-    copyComponent(getFreeCash()->getComponent<bufferComponent>());
-    copyComponent(getFreeCash()->getComponent<textureComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<transformComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<textureComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<bufferComponent>());
 }
 
 object3d::object3dCash::object3dCash() {
     addComponent<transformComponent>();
-    addComponent<bufferComponent>();
     addComponent<textureComponent>();
+    addComponent<bufferComponent>();
 }

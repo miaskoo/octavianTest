@@ -23,10 +23,6 @@ public:
     void setCashPos(vec3f aPos);
     void setCashSize(vec3f aSize);
     void setCashRotate(float* aRotate);
-
-    void bind() const override;
-    void unbind() const override;
-    void use() const override {}
 private:
     vec3f cashPos;
     vec3f cashSize;

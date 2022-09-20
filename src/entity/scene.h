@@ -7,9 +7,9 @@ public:
     scene();
     ~scene() = default;
     virtual void createCash() override {}
-    void updateDirtyCash(entity* obj);
+    virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) override;
     void createNewCash(entity* obj, std::list<std::shared_ptr<entityCash>>& cashList);
     void checkDirty(entity* obj, bool& result);
 protected:
-    virtual void updateCash() override {}
+    void updateCashChilds(size_t freeCashIdx, size_t busyCashIdx, entity* obj);
 };

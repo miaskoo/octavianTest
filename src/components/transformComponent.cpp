@@ -41,15 +41,15 @@ void transformComponent::setCashRotate(float *aRotate) {
     }
 }
 
-void transformComponent::bind() const {
-    glPushMatrix();
-    glTranslatef(cashPos[0], cashPos[1], cashPos[2]);
-    glMultMatrixf(cashRotate);
-    glScalef(cashSize[0], cashSize[1], cashSize[2]);
-}
-
-void transformComponent::unbind() const {
-    glPopMatrix();
-}
-
+//void transformComponent::bind() const {
+//    glPushMatrix();
+//    glTranslatef(cashPos[0], cashPos[1], cashPos[2]);
+//    glMultMatrixf(cashRotate);
+//    glScalef(cashSize[0], cashSize[1], cashSize[2]);
+//}
+//
+//void transformComponent::unbind() const {
+//    glPopMatrix();
+//}
+//
 
