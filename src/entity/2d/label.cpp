@@ -2,7 +2,7 @@
 #include "transformComponent.h"
 #include "colorComponent.h"
 #include "renderComponent.h"
-#include "systemRender.h"
+#include "renderSystem.h"
 
 #ifdef MACOS
 #include "GLUT/glut.h"
@@ -15,7 +15,7 @@
 label::label() {
     addComponent<colorComponent>();
     addComponent<labelComponent>();
-    systemRender::getInstance()->registerEntity(this);
+    renderSystem::getInstance()->registerEntity(this);
 }
 
 void label::createCash() {

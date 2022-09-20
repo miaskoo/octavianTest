@@ -1,17 +1,20 @@
-//#pragma once
-//
-//#include "buttonComponent.h"
-//#include <functional>
-//
-//class clickComponent : public buttonComponent {
-//public:
-//    clickComponent() = default;
-//    ~clickComponent() = default;
-//    virtual void use() const override;
-//    void setClickCallback(std::function<void()>&& aClickCallback);
-//    void setClickable(bool value);
-//    bool isClickable();
-//private:
-//    std::function<void()> clickCallback;
-//    bool clickable = true;
-//};
+#pragma once
+
+#include "componentBase.h"
+#include <functional>
+
+class clickComponent : public componentBase<componentId::CLICK> {
+public:
+    clickComponent() = default;
+    ~clickComponent() = default;
+    void setClickCallback(std::function<void()>&& aClickCallback);
+    void setState(stateButton aState);
+    void setClickable(bool value);
+    bool isClickable() const;
+    stateButton getState() const;
+    const std::function<void()>& getClickCallback() const;
+private:
+    std::function<void()> clickCallback;
+    stateButton state;
+    bool clickable = true;
+};

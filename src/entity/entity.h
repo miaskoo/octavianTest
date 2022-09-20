@@ -19,7 +19,7 @@ class entity : public componentContainer {
 public:
     
     ~entity();
-    dimension getDimension();
+    dimension getDimension() const;
     
     std::shared_ptr<entity> getParent();
     const std::vector<std::shared_ptr<entity>>& getChilds();
@@ -33,13 +33,11 @@ public:
     void addAction(actionBase* action);
     void clearAllActions();
     
-    virtual void updateWithMousePos(int x, int y, stateMouse state);
-    
-    bool isDirty();
+    bool isDirty() const;
     void markDirty();
     void unDirty();
     void setIgnoreSorting(bool value);
-    bool isIgnoreSorting();
+    bool isIgnoreSorting() const;
     
     virtual void updateCash(size_t freeCashIdx, size_t busyCashIdx) = 0;
     

@@ -3,13 +3,13 @@
 #include "transformComponent.h"
 #include "textureComponent.h"
 #include "renderComponent.h"
-#include "systemRender.h"
+#include "renderSystem.h"
 
 object3d::object3d() : entity(dimension::THREE) {
     addComponent<transformComponentMain<vec3f>>();
     addComponent<textureComponent>();
     addComponent<bufferComponent>();
-    systemRender::getInstance()->registerEntity(this);
+    renderSystem::getInstance()->registerEntity(this);
 }
 
 void object3d::createCash() {

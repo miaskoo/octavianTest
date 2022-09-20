@@ -2,14 +2,17 @@
 #include "transformComponent.h"
 #include "textureComponent.h"
 #include "transformComponent.h"
+#include "renderSystem.h"
+#include "mouseSystem.h"
 
 entity::entity(dimension aType) : type(aType) {}
 
 entity::~entity() {
-    systemRender::getInstance()->unregisterEntity(this);
+    renderSystem::getInstance()->unregisterEntity(this);
+    mouseSystem::getInstance()->unregisterEntity(this);
 }
 
-dimension entity::getDimension() {
+dimension entity::getDimension() const {
     return type;
 }
 
@@ -95,12 +98,6 @@ void entity::update(float dt) {
     }
 }
 
-void entity::updateWithMousePos(int x, int y, stateMouse state) {
-    for (auto& child : childs) {
-        child->updateWithMousePos(x, y, state);
-    }
-}
-
 void entity::addAction(actionBase *action) {
     actions.emplace_back(std::move(action));
 }
@@ -109,7 +106,7 @@ void entity::clearAllActions() {
     actions.clear();
 }
 
-bool entity::isDirty() {
+bool entity::isDirty() const {
     for (const auto& component : components) {
         if (component) {
             if (component->isDirty()) {
@@ -137,7 +134,7 @@ void entity::setIgnoreSorting(bool value) {
     ignoreSorting = value;
 }
 
-bool entity::isIgnoreSorting() {
+bool entity::isIgnoreSorting() const {
     return ignoreSorting;
 }
 

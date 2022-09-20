@@ -39,6 +39,10 @@ void bufferComponent::setBuffSize(size_t size) {
     data.buffSize = size;
 }
 
+void bufferComponent::setCullFaceMode(bool value) {
+    data.cullFaceMode = value;
+}
+
 size_t bufferComponent::getBuffIdx() const {
     return data.buffIdx;
 }

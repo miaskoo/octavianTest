@@ -1,6 +1,6 @@
 #pragma once
 
-enum class componentId {TRANSFORM = 0U, COLOR = 1U, TEXTURE = 2U, RENDER = 3U, SIZE = 4U};
+enum class componentId {TRANSFORM = 0U, COLOR = 1U, TEXTURE = 2U, RENDER = 3U, CLICK = 4U, SIZE = 5U};
 enum class stateButton {WAIT = 0U, HOVER = 1U, PRESS = 2U, LOCK = 0U};
 
 class componentBaseInterface {

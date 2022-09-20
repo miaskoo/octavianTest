@@ -3,7 +3,7 @@
 #include "componentBase.h"
 #include <string>
 
-enum class typeRenderComponent {SPRITE = 0U, BUFFER = 1U, LABEL = 2U, NONE = 3U};
+enum class typeRenderComponent {SPRITE = 0U, BUFFER = 1U, LABEL = 2U, BUTTON = 3U, NONE = 3U};
 
 struct bufferData {
     size_t buffIdx = 0U;

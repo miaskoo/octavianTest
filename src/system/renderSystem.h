@@ -9,10 +9,11 @@ class entityCash;
 class entity;
 class colorComponent;
 class textureComponent;
+class transformComponent;
 
-class systemRender {
+class renderSystem {
 public:
-    static systemRender* getInstance();
+    static renderSystem* getInstance();
     static void cleanup();
     
     void update(size_t cashIdx);
@@ -20,8 +21,8 @@ public:
     void registerEntity(entity* entity);
     void unregisterEntity(entity* entity);
 private:
-    systemRender() = default;
-    ~systemRender() = default;
+    renderSystem() = default;
+    ~renderSystem() = default;
     void setOrthographic();
     void setPerspective();
     void updateWindowSize();
@@ -30,9 +31,12 @@ private:
     void unbindColor();
     void bindTexture(textureComponent* component);
     void unbindTexture();
+    void bindMatrix(transformComponent* component);
+    void unbindMatrix();
     void renderSprite();
     void renderBuffer(size_t buffIdx, size_t buffSize, bool cullfaceMode);
     void renderLabel(const std::string& text, void* font);
+    void sortEntityForRender();
     
     std::vector<entity*> objects;
     
@@ -40,6 +44,7 @@ private:
     int screenH = 0;
     bool windowSizeDirty = false;
     bool ortho = false;
+    bool dirty = false;
     
-    static inline systemRender* instance = nullptr;
+    static inline renderSystem* instance = nullptr;
 };

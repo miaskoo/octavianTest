@@ -8,6 +8,9 @@
 #include "renderComponent.h"
 #include "textureComponent.h"
 
+#include "renderSystem.h"
+#include "mouseSystem.h"
+
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
@@ -29,7 +32,7 @@ void constructorWindow::initWindow(int argc, char **argv) {
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(0,0);
     glutInitWindowSize(screenW,screenH);
-    systemRender::getInstance()->setWindowSize(screenW, screenH);
+    renderSystem::getInstance()->setWindowSize(screenW, screenH);
     srand(time(0U));
     glutCreateWindow("test");
 #ifndef MACOS
@@ -75,7 +78,7 @@ void constructorWindow::updateWindow() {
 
 void constructorWindow::updateScene(float dt) {
     auto clickState = click.load();
-    mainScene->updateWithMousePos(mouseX.load(), mouseY.load(), clickState);
+    mouseSystem::getInstance()->update(mouseX.load(), mouseY.load(), clickState);
     if (clickState == stateMouse::CLICK_OUT) {
         click.store(stateMouse::IDLE);
     }
@@ -107,7 +110,7 @@ void constructorWindow::renderScene() {
         if (cashDirty.load()) {
             cashDirty.store(false);
         }
-        systemRender::getInstance()->update(getCashIdx(typeCash::BUSY));
+        renderSystem::getInstance()->update(getCashIdx(typeCash::BUSY));
         currentFps++;
     }
 }
@@ -224,10 +227,10 @@ void constructorWindow::initScene() {
     uiNode->addChild(mousePosLabel);
     
     auto buttonPlay = fEntity.createButton({0,0}, {400, 100});
-//    buttonPlay->getComponent<buttonComponent>()->setTexIdx(
-//        fTexture.getTextureIdx("wait.png"),
-//        fTexture.getTextureIdx("hover.png"),
-//        fTexture.getTextureIdx("press.png"));
+    buttonPlay->getComponent<textureButtonComponent>()->setTexButtonIdx(
+        fTexture.getTextureIdx("wait.png"),
+        fTexture.getTextureIdx("hover.png"),
+        fTexture.getTextureIdx("press.png"));
     buttonPlay->getTransformComponent()->setAnchor(tAnchor::y, 0.8f);
     mainScene->addChild(buttonPlay);
     
@@ -295,37 +298,37 @@ void constructorWindow::initScene() {
         };
     }
     std::weak_ptr<entity> wButton = buttonPlay;
-//    buttonPlay->getComponent<clickComponent>()->setClickCallback([this, wButton, wTorusPull, rotateTorusAction, labelWeak, addActionChangeToLabel]() {
-//        for (int n = 0; n < 5; n++) {
-//            if (rotateTorusAction[n]) {
-//                float randSpeed = 1100 - (100 * (rand() % 8));
-//                rotateTorusAction[n](wTorusPull[n], randSpeed);
-//            }
-//            int waitTime = 1000 + 500 * n;
-//            mainScene->addAction(fAction.createDelayAction(waitTime, [this, wTorus = wTorusPull[n]](){
-//                if (auto torus = wTorus.lock()) {
-//                    torus->clearAllActions();
-//                    auto needRotate = quaternion::getFromEuler3(0, 90, 0);
-//                    auto angle = (rand() % 6) * (360 / 8);
-//                    needRotate = needRotate * quaternion::getFromEuler(quaternion::axisX, 22.5f + angle);
-//                    torus->getTransformComponent()->setRotate(needRotate);
-//                }
-//            }));
-//        }
-//        mainScene->addAction(fAction.createDelayAction(3100, [wButton, labelWeak, addActionChangeToLabel](){
-//            if (auto buttonPlay = wButton.lock()) {
-//                buttonPlay->getComponent<clickComponent>()->setClickable(true);
-//            }
-//            addActionChangeToLabel();
-//        }));
-//        if (auto buttonPlay = wButton.lock()) {
-//            buttonPlay->getComponent<clickComponent>()->setClickable(false);
-//        }
-//        if (auto labelButtonPlay = labelWeak.lock()) {
-//            labelButtonPlay->clearAllActions();
-//            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, 255);
-//        }
-//    });
+    buttonPlay->getComponent<clickComponent>()->setClickCallback([this, wButton, wTorusPull, rotateTorusAction, labelWeak, addActionChangeToLabel]() {
+        for (int n = 0; n < 5; n++) {
+            if (rotateTorusAction[n]) {
+                float randSpeed = 1100 - (100 * (rand() % 8));
+                rotateTorusAction[n](wTorusPull[n], randSpeed);
+            }
+            int waitTime = 1000 + 500 * n;
+            mainScene->addAction(fAction.createDelayAction(waitTime, [this, wTorus = wTorusPull[n]](){
+                if (auto torus = wTorus.lock()) {
+                    torus->clearAllActions();
+                    auto needRotate = quaternion::getFromEuler3(0, 90, 0);
+                    auto angle = (rand() % 6) * (360 / 8);
+                    needRotate = needRotate * quaternion::getFromEuler(quaternion::axisX, 22.5f + angle);
+                    torus->getTransformComponent()->setRotate(needRotate);
+                }
+            }));
+        }
+        mainScene->addAction(fAction.createDelayAction(3100, [wButton, labelWeak, addActionChangeToLabel](){
+            if (auto buttonPlay = wButton.lock()) {
+                buttonPlay->getComponent<clickComponent>()->setClickable(true);
+            }
+            addActionChangeToLabel();
+        }));
+        if (auto buttonPlay = wButton.lock()) {
+            buttonPlay->getComponent<clickComponent>()->setClickable(false);
+        }
+        if (auto labelButtonPlay = labelWeak.lock()) {
+            labelButtonPlay->clearAllActions();
+            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, 255);
+        }
+    });
 }
 
 void constructorWindow::destroyScene() {

@@ -14,3 +14,13 @@ protected:
     unsigned int texIdx = 0;
     unsigned int shaderIdx = 0;
 };
+
+class textureButtonComponent : public textureComponent {
+public:
+    textureButtonComponent() = default;
+    ~textureButtonComponent() = default;
+    void setTexButtonIdx(unsigned int normal, unsigned int cover, unsigned int click);
+    void updateTexture(stateButton state);
+protected:
+    unsigned int texturs[3] {0};
+};

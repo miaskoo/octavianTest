@@ -5,7 +5,6 @@
 #include "sprite.h"
 #include "button.h"
 #include "transformComponent.h"
-#include "buttonComponent.h"
 #include "renderComponent.h"
 
 std::shared_ptr<entity> factoryEntity::createNode(vec2f pos, vec2f size) {
@@ -64,6 +63,7 @@ std::shared_ptr<entity> factoryEntity::createTorus(vec3f pos, vec3f size, int co
     auto buff = fBuffer.getTorusBufferIdx(countSector);
     result->getComponent<bufferComponent>()->setBuffIdx(buff.vao);
     result->getComponent<bufferComponent>()->setBuffSize(buff.countIdx);
+    result->getComponent<bufferComponent>()->setCullFaceMode(true);
     return result;
 }
 

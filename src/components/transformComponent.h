@@ -16,8 +16,8 @@ public:
     transformComponent();
     ~transformComponent() = default;
     
-    vec3f getCashPos() const;
-    vec3f getCashSize() const;
+    const vec3f& getCashPos() const;
+    const vec3f& getCashSize() const;
     float const* getCashRotate() const;
     
     void setCashPos(vec3f aPos);

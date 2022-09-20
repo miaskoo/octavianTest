@@ -3,6 +3,7 @@
 #include "colorComponent.h"
 #include "textureComponent.h"
 #include "renderComponent.h"
+#include "transformComponent.h"
 
 #ifdef MACOS
 #include "GLUT/glut.h"
@@ -52,6 +53,10 @@ void renderSystem::updateWindowSize() {
 }
 
 void renderSystem::update(size_t cashIdx) {
+    if (dirty) {
+        sortEntityForRender();
+        dirty = false;
+    }
     if (windowSizeDirty) {
         updateWindowSize();
         windowSizeDirty = false;
@@ -76,6 +81,7 @@ void renderSystem::renderEntity(entity* object, size_t cashIdx) {
     
     bindColor(cash->getComponent<colorComponent>());
     bindTexture(cash->getComponent<textureComponent>());
+    bindMatrix(cash->getComponent<transformComponent>());
     
     auto component = cash->getComponent<renderComponent>();
     switch (component->getRenderType()) {
@@ -97,6 +103,7 @@ void renderSystem::renderEntity(entity* object, size_t cashIdx) {
             break;
         }
     }
+    unbindMatrix();
     unbindTexture();
     unbindColor();
 }
@@ -155,9 +162,13 @@ void renderSystem::setWindowSize(int w, int h) {
 }
 
 void renderSystem::registerEntity(entity* object) {
+    if (!object || std::find(objects.begin(), objects.end(), object) != objects.end()) {
+        return;
+    }
     if (auto component = object->getComponent<renderComponent>()) {
         objects.push_back(object);
     }
+    dirty = true;
 }
 
 void renderSystem::unregisterEntity(entity* object) {
@@ -177,4 +188,31 @@ renderSystem* renderSystem::getInstance() {
 void renderSystem::cleanup() {
     delete instance;
     instance = nullptr;
+}
+
+
+void renderSystem::bindMatrix(transformComponent* component) {
+    glPushMatrix();
+    auto& pos = component->getCashPos();
+    auto rotate = component->getCashRotate();
+    auto& size = component->getCashSize();
+    glTranslatef(pos[0], pos[1], pos[2]);
+    glMultMatrixf(rotate);
+    glScalef(size[0], size[1], size[2]);
+}
+
+void renderSystem::unbindMatrix() {
+    glPopMatrix();
+}
+
+void renderSystem::sortEntityForRender() {
+    std::sort(objects.begin(), objects.end(), [](const auto& a, const auto& b){
+        if (a->isIgnoreSorting()) {
+            return true;
+        }
+        if (b->isIgnoreSorting()) {
+            return false;
+        }
+        return static_cast<size_t>(a->getDimension()) > static_cast<size_t>(b->getDimension());
+    });
 }
