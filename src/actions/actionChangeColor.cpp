@@ -2,36 +2,44 @@
 #include "colorComponent.h"
 #include "entity.h"
 
-actionChangeColor::actionChangeColor(vec4f aStartColor, vec4f aNewColor, int aTime, std::function<void()> aCallback) :
-actionBase(aCallback),
-startColor(aStartColor),
-newColor(aNewColor),
-time(0),
-fullTime(aTime) {
-    for (size_t n = 0U; n < 4U; n++) {
-        if (newColor[n] > startColor[n]) {
-            stepColor[n] = newColor[n] - startColor[n];
-        }
-        else {
-            stepColor[n] = startColor[n] - newColor[n];
-        }
-    }
-}
+actionChangeColor::actionChangeColor(color4b aColor, unsigned int aTime, std::function<void()> aCallback) :
+actionDelay(aTime, aCallback),
+newColor(aColor) {}
 
 
 void actionChangeColor::update(std::weak_ptr<entity> object, float dt)  {
+    auto pObject = object.lock();
+    
+    if (!pObject) {
+        return;
+    }
+    
+    if (!init) {
+        auto color = pObject->getComponent<colorComponent>()->getColor();
+        for (size_t n = 0U; n < 4U; n++) {
+            startColor[n] = color[n];
+            if (newColor[n] > startColor[n]) {
+                stepColor[n] = newColor[n] - startColor[n];
+            }
+            else {
+                stepColor[n] = startColor[n] - newColor[n];
+            }
+        }
+        init = true;
+    }
+    
+    actionDelay::update(object, dt);
     if (isEnd()) {
         return;
     }
-    time += dt;
-    if (time > fullTime) {
-        end(object);
-        return;
-    }
-    float percent = time / fullTime;
     
-    vec4f resultColor;
+    auto percent = getTimeProgress();
+    color4b resultColor;
     for (int n = 0; n < 4U; n++) {
+        if (newColor[n] == startColor[n]) {
+            resultColor[n] = startColor[n];
+            continue;
+        }
         if (newColor[n] > startColor[n]) {
             resultColor[n] = startColor[n] + stepColor[n] * percent;
         }
@@ -39,24 +47,22 @@ void actionChangeColor::update(std::weak_ptr<entity> object, float dt)  {
             resultColor[n] = startColor[n] - stepColor[n] * percent;
         }
     }
-    if (auto pObject = object.lock()) {
-        pObject->getComponent<colorComponent>()->setColor(resultColor.x(), resultColor.y(), resultColor.z(), resultColor.w());
-    }
-}
-
-bool actionChangeColor::isEnd() const {
-    return time > fullTime;
+    pObject->getComponent<colorComponent>()->setColor(resultColor[0], resultColor[1], resultColor[2], resultColor[3]);
 }
 
 void actionChangeColor::end(std::weak_ptr<entity> object) {
-    if (auto pObject = object.lock()) {
-        pObject->getComponent<colorComponent>()->setColor(newColor.x(), newColor.y(), newColor.z(), newColor.w());
+    auto pObject = object.lock();
+    
+    if (!pObject) {
+        return;
     }
-    if (callback) {
-        callback();
-    }
+    
+    pObject->getComponent<colorComponent>()->setColor(newColor[0], newColor[1], newColor[2], newColor[3]);
+    
+    actionDelay::end(object);
 }
 
 void actionChangeColor::reset() {
-    time = 0.f;
+    actionDelay::reset();
+    init = false;
 }

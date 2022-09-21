@@ -11,10 +11,12 @@ labelComponent::labelComponent() : renderComponent(typeRenderComponent::LABEL) {
 
 void labelComponent::setText(const std::string& text) {
     data.text = text;
+    markDirty();
 }
 
 void labelComponent::setFont(void *font) {
     data.font = font;
+    markDirty();
 }
 
 const std::string& labelComponent::getText() const {

@@ -8,11 +8,11 @@ public:
     colorComponent() = default;
     ~colorComponent() = default;
     void setAlphaMode(bool value);
-    void setColor(unsigned int r, unsigned int g, unsigned int b);
-    void setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a);
-    unsigned int* getColor();
-    bool isAlphaMode();
+    void setColor(unsigned char r, unsigned char g, unsigned char b);
+    void setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+    const color4b& getColor() const;
+    bool isAlphaMode() const;
 private:
-    unsigned int color[4] = {255, 255, 255, 255};
+    color4b color = {MAX_COLOR, MAX_COLOR, MAX_COLOR, MAX_COLOR};
     bool alphaMode = true;
 };

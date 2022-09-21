@@ -1,39 +1,44 @@
 #include "actionRotate.h"
 #include "transformComponent.h"
 
-actionRotate::actionRotate(quaternion aStartRotate, vec3f aAxis, float aAngle, int aTime, std::function<void()> aCallback) :
-actionBase(aCallback),
+actionRotate::actionRotate(vec3f aAxis, float aAngle, unsigned int aTime, std::function<void()> aCallback) :
+actionDelay(aTime, aCallback),
 destination(aAngle),
-axis(aAxis),
-fullTime(aTime),
-time(0),
-startRotate(aStartRotate) {}
-
-bool actionRotate::isEnd() const {
-    return time > fullTime;
-}
+axis(aAxis){}
 
 void actionRotate::update(std::weak_ptr<entity> object, float dt)  {
-    time += dt;
+    auto pObject = object.lock();
+    
+    if (!pObject) {
+        return;
+    }
+    
+    if (!init) {
+        startRotate = pObject->getTransformComponent()->getRotate();
+        init = true;
+    }
+    
+    actionDelay::update(object, dt);
     if (isEnd()) {
         return;
     }
-    auto percent = time / fullTime;
-    if (auto pObject = object.lock()) {
-        pObject->getTransformComponent()->setRotate(startRotate * quaternion::getFromEuler(axis, destination * percent));
-    }
+    
+    pObject->getTransformComponent()->setRotate(startRotate * quaternion::getFromEuler(axis, destination * getTimeProgress()));
 }
 
 void actionRotate::end(std::weak_ptr<entity> object) {
-    if (auto pObject = object.lock()) {
-        pObject->getTransformComponent()->setRotate(startRotate * quaternion::getFromEuler(axis, destination));
+    auto pObject = object.lock();
+    
+    if (!pObject) {
+        return;
     }
-    if (callback) {
-     callback();
-    }
+    
+    pObject->getTransformComponent()->setRotate(startRotate * quaternion::getFromEuler(axis, destination));
+    
+    actionDelay::end(object);
 }
 
 void actionRotate::reset() {
-    time = 0.f;
+    actionDelay::reset();
     startRotate = startRotate * quaternion::getFromEuler(axis, destination);
 }

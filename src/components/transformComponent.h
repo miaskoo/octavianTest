@@ -57,6 +57,7 @@ public:
     
     virtual quaternion getRotate() = 0;
     virtual void setRotate(int x, int y, int z) = 0;
+    virtual void setRotate(const vec3f& aRotate) = 0;
     virtual void setRotate(const quaternion &aRotate) = 0;
     
     virtual vec3f getRealPos(size_t countDimension, std::weak_ptr<entity> parent) = 0;
@@ -184,8 +185,13 @@ public:
         rotate = quaternion::getFromEuler3(x, y, z);
         transformComponent::markDirty();
     }
-    virtual void setRotate(const quaternion &aRotate) override {
+    virtual void setRotate(const quaternion& aRotate) override {
         rotate = aRotate;
+        transformComponent::markDirty();
+    }
+    
+    virtual void setRotate(const vec3f& aRotate) override {
+        rotate = quaternion::getFromEuler3(aRotate[0], aRotate[1], aRotate[2]);
         transformComponent::markDirty();
     }
     

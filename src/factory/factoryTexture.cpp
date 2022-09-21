@@ -16,7 +16,7 @@ void factoryTexture::loadTexturs() {
     const std::string dirSymbols = "\\";
 #endif
     const std::string dirResource = dirSymbols + "resource" + dirSymbols;
-    std::string names[] = { "slot.png", "slotTorus.png", "scene.png", "wait.png", "hover.png", "press.png" };
+    std::string names[] = { "slot.png", "slotTorus.png", "scene.png", "wait.png", "cover.png", "press.png" };
     for (const auto& name : names) {
         auto buildPatch = std::filesystem::absolute("." + dirSymbols);
         auto projectPatch = buildPatch.parent_path().parent_path().parent_path();

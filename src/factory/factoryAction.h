@@ -7,12 +7,14 @@ class actionBase;
 
 class factoryAction {
 public:
+    static actionBase* createRotateAction(vec3f axis, float angle, unsigned int time, std::function<void()> callback = nullptr);
+    static actionBase* createDelayAction(unsigned int time, std::function<void()> callback = nullptr);
+    static actionBase* createRepeatAction(actionBase* action, int count, std::function<void()> callback = nullptr);
+    static actionBase* createRepeatInfinityAction(actionBase* action, std::function<void()> callback = nullptr);
+    static actionBase* createChangeColorAction(color4b targetColor, unsigned int time, std::function<void()> callback = nullptr);
+    static actionBase* createActionSequence(std::vector<actionBase*> actions, std::function<void()> callback = nullptr);
+    static actionBase* createRotateLerpAction(quaternion targetRotate, unsigned int time, std::function<void()> callback = nullptr);
+private:
     factoryAction() = default;
     ~factoryAction() = default;
-    actionBase* createRotateAction(quaternion startRotate, vec3f axis, float angle, int time, std::function<void()> callback = nullptr);
-    actionBase* createDelayAction(int time, std::function<void()> callback = nullptr);
-    actionBase* createRepeatAction(actionBase* action, int count, std::function<void()> callback = nullptr);
-    actionBase* createRepeatInfinityAction(actionBase* action, std::function<void()> callback = nullptr);
-    actionBase* createChangeColorAction(vec4f startColor, vec4f endColor, int time, std::function<void()> callback = nullptr);
-    actionBase* createActionSequence(std::vector<actionBase*> actions, std::function<void()> callback = nullptr);
 };

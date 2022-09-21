@@ -1,14 +1,14 @@
 #include "colorComponent.h"
 #include "glFunctional.h"
 
-void colorComponent::setColor(unsigned int r, unsigned int g, unsigned int b) {
+void colorComponent::setColor(unsigned char r, unsigned char g, unsigned char b) {
     color[0] = r;
     color[1] = g;
     color[2] = b;
     markDirty();
 }
 
-void colorComponent::setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a) {
+void colorComponent::setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
     color[0] = r;
     color[1] = g;
     color[2] = b;
@@ -21,10 +21,10 @@ void colorComponent::setAlphaMode(bool value) {
     markDirty();
 }
 
-bool colorComponent::isAlphaMode() {
+bool colorComponent::isAlphaMode() const {
     return alphaMode;
 }
 
-unsigned int* colorComponent::getColor() {
+const color4b& colorComponent::getColor() const {
     return color;
 }

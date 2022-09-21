@@ -142,3 +142,28 @@ transformComponentInterface* entity::getTransformComponent() {
     auto component = getComponent<transformComponent>();
     return dynamic_cast<transformComponentInterface*>(component);
 }
+
+void entity::setPos(vec3f pos) {
+    getTransformComponent()->setPos(pos);
+}
+
+void entity::setSize(vec3f size) {
+    getTransformComponent()->setSize(size);
+}
+
+void entity::setPivot(vec2f pivot) {
+    getTransformComponent()->setPivot(pivot);
+}
+
+void entity::setScale(vec3f scale) {
+    getTransformComponent()->setScale(scale);
+}
+
+void entity::setAnchor(vec2f anchor) {
+    getTransformComponent()->setAnchor(anchor);
+}
+
+void entity::setRotate(vec3f rotate) {
+    getTransformComponent()->setRotate(rotate);
+}
+

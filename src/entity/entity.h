@@ -34,8 +34,6 @@ public:
     void clearAllActions();
     
     bool isDirty() const;
-    void markDirty();
-    void unDirty();
     void setIgnoreSorting(bool value);
     bool isIgnoreSorting() const;
     
@@ -43,6 +41,12 @@ public:
     
     std::shared_ptr<entityCash> getCash(size_t cashIdx);
     
+    void setPos(vec3f pos);
+    void setSize(vec3f size);
+    void setRotate(vec3f rotate);
+    void setAnchor(vec2f anchor);
+    void setPivot(vec2f pivot);
+    void setScale(vec3f scale);
     transformComponentInterface* getTransformComponent();
 protected:
     entity() = delete;
@@ -54,6 +58,9 @@ protected:
     void setWeakPointerThis(std::weak_ptr<entity> aWThis);
     
     virtual void createCash() {}
+    
+    void markDirty();
+    void unDirty();
     
     std::array<std::shared_ptr<entityCash>, static_cast<size_t>(typeCash::COUNT)> cashArray;
     std::weak_ptr<entity> wThis;

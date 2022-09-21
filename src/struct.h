@@ -4,6 +4,7 @@
 #include "math.h"
 
 const float RADIANS = 57.2958f;
+const unsigned MAX_COLOR = 254;
 enum class stateMouse {IDLE = 0U, CLICK = 1U, CLICK_OUT = 2U};
 enum class dimension {TWO = 2U, THREE = 3U, NONE = 0U};
 enum class typeCash {FREE = 0U, BUSY = 1U, COUNT = 2U};
@@ -196,9 +197,10 @@ struct mat4f {
             z = atan2(yTr,xTr) * RADIANS;
         }
         
-        x = std::clamp(fabsf(x), 0.f, 360.f );
-        y = std::clamp(fabsf(y), 0.f, 360.f );
-        z = std::clamp(fabsf(z), 0.f, 360.f );
+        x = round(std::clamp(fabsf(x), 0.f, 360.f ));
+        y = round(std::clamp(fabsf(y), 0.f, 360.f ));
+        z = round(std::clamp(fabsf(z), 0.f, 360.f ));
+        
         return result;
     }
   
@@ -330,6 +332,43 @@ struct quaternion {
         return mat4f::matToVec3f(mat);
     }
     
+    static quaternion getLerp(quaternion a, quaternion b, float t) {
+        quaternion result;
+        if (t > 1.f) {
+            t = 1.f;
+        }
+        if (t < 0.f) {
+            t = 0.f;
+        }
+        auto cosAngle = vec4f::getScalarProduct(a.value, b.value);
+        if (std::abs(cosAngle) >= 1.f){
+            return b;
+        }
+        if (cosAngle < 0.f) {
+            for (size_t n = 0U; n < b.value.size(); n++) {
+                b.value[n] *= -1;
+            }
+            cosAngle = -cosAngle;
+        }
+        
+        float angle = acosf(cosAngle);
+        float sinAngle = sqrtf(1.f - cosAngle * cosAngle);
+        
+        if (fabsf(sinAngle) < 0.001f) {
+            return b;
+        }
+        
+        float ratioA = sinf((1.f - t) * angle) / sinAngle;
+        float ratioB = sinf(t * angle) / sinAngle;
+        
+        for (size_t n = 0U; n < result.value.size(); n++) {
+            result[n] = (a.value[n] * ratioA + b.value[n] * ratioB);
+        }
+        
+        normal(result);
+        return result;
+    }
+    
     quaternion& operator= (const quaternion& aValue) {
         value[0] = aValue[0];
         value[1] = aValue[1];
@@ -338,5 +377,8 @@ struct quaternion {
         return *this;
     }
 };
+
+using color4b = std::array<unsigned char, 4U>;
+
 
 

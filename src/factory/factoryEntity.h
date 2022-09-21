@@ -3,6 +3,7 @@
 #include <memory>
 #include "struct.h"
 #include "factoryBuffer.h"
+#include "factoryTexture.h"
 
 class entity;
 
@@ -12,12 +13,15 @@ class factoryEntity {
 public:
     factoryEntity() = default;
     ~factoryEntity() = default;
-    std::shared_ptr<entity> createNode(vec2f pos = {}, vec2f size = {});
-    std::shared_ptr<entity> createLabel(vec2f pos = {}, const std::string& text = "", void* font = nullptr);
-    std::shared_ptr<entity> createQuadrilateral(vec3f pos, vec3f size, quaternion rotate);
-    std::shared_ptr<entity> createTorus(vec3f pos, vec3f size, int countSector, quaternion q = quaternion());
-    std::shared_ptr<entity> createSprite(vec2f pos = {}, vec2f size = {});
-    std::shared_ptr<entity> createButton(vec2f pos = {}, vec2f size = {});
+    std::shared_ptr<entity> createNode();
+    std::shared_ptr<entity> createLabel(const std::string& text = "");
+    std::shared_ptr<entity> createQuadrilateral();
+    std::shared_ptr<entity> createTorus(size_t countSector);
+    std::shared_ptr<entity> createSprite(const std::string& dirTexture = "");
+    std::shared_ptr<entity> createButton(const std::string& dirTextureNormal = "", const std::string& dirTextureCover = "", const std::string& dirTextureClick = "");
+    
+    factoryTexture& getTextureFactory();
 private:
     factoryBuffer fBuffer;
+    factoryTexture fTexture;
 };

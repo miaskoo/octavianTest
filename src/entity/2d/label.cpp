@@ -52,7 +52,7 @@ void label::updateCash(size_t freeCashIdx, size_t busyCashIdx) {
     auto freeTransformComponent = getCash(freeCashIdx)->getComponent<transformComponent>();
     copyComponent(freeTransformComponent);
     freeTransformComponent->setCashSize(currentTransformComponent->getScale());
-    copyComponent(getCash(freeCashIdx)->getComponent<renderComponent>());
+    copyComponent(getCash(freeCashIdx)->getComponent<labelComponent>());
     copyComponent(getCash(freeCashIdx)->getComponent<colorComponent>());
 }
 

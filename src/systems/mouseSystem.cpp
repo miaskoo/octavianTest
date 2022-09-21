@@ -52,7 +52,7 @@ void mouseSystem::update(int xPos, int yPos, stateMouse state) {
                     }
                 }
                 else {
-                    newState = stateButton::HOVER;
+                    newState = stateButton::COVER;
                 }
             }
         }

@@ -5,16 +5,16 @@ project(OctavianTest LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 # includes
-include_directories("./" "include" "src" "src/actions" "src/components" "src/entity" "src/entity/2d" "src/entity/3d" "src/factory" "src/system")
+include_directories("./" "include" "src" "src/actions" "src/components" "src/entity" "src/entity/2d" "src/entity/3d" "src/factory" "src/systems")
 link_directories("./")
 
 # test
-file(GLOB_RECURSE MAIN "src/main.cpp" "src/struct.h" "src/constructorWindow.h" "src/constructorWindow.cpp")
+file(GLOB_RECURSE MAIN "src/main.cpp" "src/struct.h" "src/constructorWindow.h" "src/constructorWindow.cpp" "src/glFunctional.h" "src/glFunctional.cpp")
 file(GLOB_RECURSE ACTION src/actions/*.h src/actions/*.cpp)
 file(GLOB_RECURSE COMPONENTS src/components/*.h src/components/*.cpp)
 file(GLOB_RECURSE ENTITY src/entity/*.h src/entity/*.cpp)
 file(GLOB_RECURSE FACTORY src/factory/*.h src/factory/*.cpp)
-file(GLOB_RECURSE SYSTEM src/system/*.h src/system/*.cpp)
+file(GLOB_RECURSE SYSTEM src/systems/*.h src/systems/*.cpp)
 # SOIL
 #file(GLOB_RECURSE HEADERS_SOIL include/SOIL/*.h)
 
@@ -24,7 +24,7 @@ source_group("test/actions" FILES ${ACTION})
 source_group("test/components" FILES ${COMPONENTS})
 source_group("test/entity" FILES ${ENTITY})
 source_group("test/factory" FILES ${FACTORY})
-source_group("test/system" FILES ${SYSTEM})
+source_group("test/systems" FILES ${SYSTEM})
 
 source_group("SOIL" FILES ${HEADERS_SOIL})
 

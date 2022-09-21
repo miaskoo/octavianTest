@@ -1,7 +1,5 @@
 #pragma once
 #include "factoryEntity.h"
-#include "factoryTexture.h"
-#include "factoryAction.h"
 #include "struct.h"
 #include <atomic>
 
@@ -55,8 +53,6 @@ private:
     std::atomic_int mouseY = 0;
     std::atomic<stateMouse> click = stateMouse::IDLE;
 
-    factoryTexture fTexture;
-    factoryAction fAction;
     factoryEntity fEntity;
     
     std::shared_ptr<scene> mainScene;
