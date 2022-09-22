@@ -2,7 +2,7 @@
 #include "struct.h"
 #include "glFunctional.h"
 
-void factoryBuffer::createTorus(int countSector) {
+bufferIdx factoryBuffer::createTorusBuffer(int countSector) {
     // p1--p2
     // |    |
     // |    |
@@ -141,17 +141,8 @@ void factoryBuffer::createTorus(int countSector) {
     buff.ebo = eboIdx;
     buff.countIdx = countIndices;
     
-    torusSectorToBuf[countSector] = buff;
-    
     delete[] vertices;
     delete[] indices;
-}
-
-bufferIdx factoryBuffer::getTorusBufferIdx(int countSector) {
-    auto iter = torusSectorToBuf.find(countSector);
-    if (iter != torusSectorToBuf.end()) {
-        return iter->second;
-    }
-    createTorus(countSector);
-    return torusSectorToBuf[countSector];
+    
+    return buff;
 }

@@ -7,7 +7,7 @@
 #include "renderSystem.h"
 #include "mouseSystem.h"
 
-#include "factoryScene.h"
+#include "factoryEntity.h"
 
 #include <stdio.h>
 #include <chrono>
@@ -35,7 +35,7 @@ void constructorWindow::initWindow(int argc, char **argv) {
 }
 
 void constructorWindow::initResource() {
-    fScene.fEntity.getTextureFactory().loadTexturs();
+    cTexture.init();
 }
 
 void constructorWindow::updateWindow() {
@@ -190,17 +190,19 @@ void constructorWindow::cleanup() {
     instance = nullptr;
 }
 
-void constructorWindow::initScene() {
-    mainScene = fScene.createSlotMachineScene();
-    
-    auto uiNode = fScene.fEntity.createNode();
-    uiNode->setPos({-200.f,-100.f});
-    uiNode->setAnchor({1.f, 1.f});
-    fpsLabel = fScene.fEntity.createLabel();
-    timeLabel = fScene.fEntity.createLabel();
-    timeLabel->setPos({0.f,-20.f});
-    mousePosLabel = fScene.fEntity.createLabel();
-    mousePosLabel->setPos({0.f, 20.f});
+void constructorWindow::setGameScene(std::shared_ptr<scene> aScene) {
+    mainScene = aScene;
+}
+
+void constructorWindow::createInfoNode() {
+    auto uiNode = factoryEntity::createNode();
+    uiNode->setPos(-200.f,-100.f);
+    uiNode->setAnchor(1.f, 1.f);
+    fpsLabel = factoryEntity::createLabel();
+    timeLabel = factoryEntity::createLabel();
+    timeLabel->setPos(0.f,-20.f);
+    mousePosLabel = factoryEntity::createLabel();
+    mousePosLabel->setPos(0.f, 20.f);
     mainScene->addChild(uiNode);
 
     fpsLabel->getTransformComponent()->setPivot(tPivot::x, 1.f);
@@ -212,9 +214,16 @@ void constructorWindow::initScene() {
     uiNode->addChild(mousePosLabel);
 }
 
-void constructorWindow::destroyScene() {
+void constructorWindow::destroyInfoNode() {
     fpsLabel.reset();
     timeLabel.reset();
     mousePosLabel.reset();
-    mainScene.reset();
+}
+
+bufferController* constructorWindow::getBufferController() {
+    return &cBuffer;
+}
+
+textureController* constructorWindow::getTextureController() {
+    return &cTexture;
 }

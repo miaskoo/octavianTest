@@ -14,10 +14,8 @@ struct bufferIdx {
 
 class factoryBuffer {
 public:
+    static bufferIdx createTorusBuffer(int countSector);
+private:
     factoryBuffer() = default;
     ~factoryBuffer() = default;
-    bufferIdx getTorusBufferIdx(int countSector);
-private:
-    void createTorus(int countSector);
-    std::unordered_map<size_t, bufferIdx> torusSectorToBuf;
 };

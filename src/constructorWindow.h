@@ -2,20 +2,28 @@
 #include "factoryScene.h"
 #include "struct.h"
 #include <atomic>
+#include "textureController.h"
+#include "bufferController.h"
 
 class scene;
+class entity;
 
 class constructorWindow {
 public:
     static constructorWindow* getInstance();
     static void cleanup();
+    
     void initWindow(int argc, char **argv);
     void initResource();
-    void initScene();
-    void destroyScene();
-    void startUpdateThread();
     void initGlutFunc();
+    
+    void setGameScene(std::shared_ptr<scene> aScene);
+    void createInfoNode();
+    void destroyInfoNode();
+    void startUpdateThread();
+   
     void startMainLoop();
+    
     int getScreenW();
     int getScreenH();
     
@@ -23,15 +31,22 @@ public:
     friend void glutIdleFuncForwarder();
     friend void glutMouseFuncForwarder(int button, int state, int x, int y);
     friend void glutPassiveMotionFuncForwarder(int x, int y);
+    
+    bufferController* getBufferController();
+    textureController* getTextureController();
 private:
     constructorWindow() = default;
     ~constructorWindow() = default;
+    
     void updateWindow();
     void updateScene(float dt);
+    
     void renderScene();
     void idleScene();
+    
     void clickWindow(int button, int state, int x, int y);
     void setMousePos(int x, int y);
+    
     size_t getCashIdx(typeCash type);
     
     const int screenW = 1024;
@@ -52,16 +67,18 @@ private:
     std::atomic_int mouseX = 0;
     std::atomic_int mouseY = 0;
     std::atomic<stateMouse> click = stateMouse::IDLE;
-
-    factoryScene fScene;
     
     std::shared_ptr<scene> mainScene;
+    
     std::shared_ptr<entity> fpsLabel;
     std::shared_ptr<entity> timeLabel;
     std::shared_ptr<entity> mousePosLabel;
     
     std::atomic_bool switchCash = false;
     std::atomic_bool cashDirty = false;
+    
+    bufferController cBuffer;
+    textureController cTexture;
     
     static inline constructorWindow* instance = nullptr;
 };

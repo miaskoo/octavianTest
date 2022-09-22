@@ -5,12 +5,9 @@
 
 class factoryTexture {
 public:
+    static unsigned int createDefaultShaderProgram();
+    static unsigned int createTexture(const std::string& dir);
+private:
     factoryTexture() = default;
     ~factoryTexture() = default;
-    void loadTexturs();
-    unsigned int getTextureIdx(const std::string& dir);
-    unsigned int getShaderTextureIdx();
-private:
-    std::unordered_map<std::string, unsigned int> nameToTex;
-    unsigned int shaderTextureProgram;
 };

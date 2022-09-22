@@ -9,30 +9,25 @@
 #include <freeglut/freeglut.h>
 #endif
 
-void factoryTexture::loadTexturs() {
+unsigned int factoryTexture::createTexture(const std::string& dir) {
 #ifdef MACOS
     const std::string dirSymbols = "/";
 #else
     const std::string dirSymbols = "\\";
 #endif
     const std::string dirResource = dirSymbols + "resource" + dirSymbols;
-    std::string names[] = { "slot.png", "slotTorus.png", "scene.png", "wait.png", "cover.png", "press.png" };
-    for (const auto& name : names) {
-        auto buildPatch = std::filesystem::absolute("." + dirSymbols);
-        auto projectPatch = buildPatch.parent_path().parent_path().parent_path();
-#if MACOS
-        projectPatch = projectPatch.parent_path().parent_path();
-#endif
-        auto needDir = projectPatch.string();
-        needDir += dirResource + name;
-        nameToTex[name] = SOIL_load_OGL_texture(needDir.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, 0);
-    }
     
-    for (const auto& texIdx : nameToTex) {
-        if (texIdx.second == 0) {
-            assert(false && (texIdx.first + " texture not load").c_str());
-        }
-    }
+    auto buildPatch = std::filesystem::absolute("." + dirSymbols);
+    auto projectPatch = buildPatch.parent_path().parent_path().parent_path();
+#if MACOS
+    projectPatch = projectPatch.parent_path().parent_path();
+#endif
+    auto needDir = projectPatch.string();
+    needDir += dirResource + dir;
+    return SOIL_load_OGL_texture(needDir.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, 0);
+}
+
+unsigned int factoryTexture::createDefaultShaderProgram() {
     const GLchar* vertexShaderSource = {
     "\
        attribute vec3 inPosition;\
@@ -82,7 +77,7 @@ void factoryTexture::loadTexturs() {
 
     std::cout << infoLog << std::endl;
 
-    shaderTextureProgram = glCreateProgram();
+    auto shaderTextureProgram = glCreateProgram();
 
     glAttachShader(shaderTextureProgram, vertexShader);
     glAttachShader(shaderTextureProgram, fragmentShader);
@@ -95,16 +90,6 @@ void factoryTexture::loadTexturs() {
     
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-}
-
-GLuint factoryTexture::getTextureIdx(const std::string& dir) {
-    auto iter = nameToTex.find(dir);
-    if (iter != nameToTex.end()) {
-        return iter->second;
-    }
-    return 0;
-}
-
-GLuint factoryTexture::getShaderTextureIdx() {
+    
     return shaderTextureProgram;
 }

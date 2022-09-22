@@ -10,35 +10,37 @@
 #include "textureComponent.h"
 
 #include "factoryAction.h"
+#include "factoryEntity.h"
+#include "textureController.h"
 
 #include <iostream>
 #include <math.h>
 #include <vector>
 
-std::shared_ptr<scene> factoryScene::createSlotMachineScene() {
+std::shared_ptr<scene> factoryScene::createGameScene() {
     auto mainScene = std::make_shared<scene>();
     mainScene->setWeakPointerThis(mainScene);
     
-    auto sceneSprite = fEntity.createSprite("scene.png");
+    auto sceneSprite = factoryEntity::createSprite("scene.png");
     sceneSprite->setSize({static_cast<float>(constructorWindow::getInstance()->getScreenW()), static_cast<float>(constructorWindow::getInstance()->getScreenH())});
     sceneSprite->setIgnoreSorting(true);
     mainScene->addChild(sceneSprite);
     
-    auto s = fEntity.createSprite("slot.png");
-    s->setPos({30, -40});
-    s->setSize({1400, 850});
+    auto s = factoryEntity::createSprite("slot.png");
+    s->setPos(30, -40);
+    s->setSize(1400, 850);
     mainScene->addChild(s);
     
-    auto buttonPlay = fEntity.createButton("wait.png", "cover.png", "press.png");
-    buttonPlay->setSize({400, 100});
+    auto buttonPlay = factoryEntity::createButton("wait.png", "cover.png", "press.png");
+    buttonPlay->setSize(400, 100);
     buttonPlay->getTransformComponent()->setAnchor(tAnchor::y, 0.8f);
     mainScene->addChild(buttonPlay);
     
-    auto labelButtonPlay = fEntity.createLabel("TOUCH ME");
-    labelButtonPlay->setPos({0, 25});
-    labelButtonPlay->setAnchor({0.5f,0.5f});
-    labelButtonPlay->setPivot({0.5f,0.5f});
-    labelButtonPlay->setScale({2.f, 2.f});
+    auto labelButtonPlay = factoryEntity::createLabel("TOUCH ME");
+    labelButtonPlay->setPos(0, 25);
+    labelButtonPlay->setAnchor(0.5f,0.5f);
+    labelButtonPlay->setPivot(0.5f,0.5f);
+    labelButtonPlay->setScale(2.f, 2.f);
     buttonPlay->addChild(labelButtonPlay);
     
     std::weak_ptr<entity> labelWeak = labelButtonPlay;
@@ -79,13 +81,14 @@ std::shared_ptr<scene> factoryScene::createSlotMachineScene() {
         pos[0] += size[0] * 0.5f;
         pos[1] += size[1] * 0.5f;
         
-        auto torus = fEntity.createTorus(8);
+        auto torus = factoryEntity::createTorus(8);
         torus->setPos(pos);
         torus->setSize(size);
-        torus->setRotate({90, 0, 90});
+        torus->setRotate(90, 0, 90);
         auto component = torus->getComponent<textureComponent>();
-        component->setTexIdx(fEntity.getTextureFactory().getTextureIdx("slotTorus.png"));
-        component->setShaderIdx(fEntity.getTextureFactory().getShaderTextureIdx());
+        auto texController = constructorWindow::getInstance()->getTextureController();
+        component->setTexIdx(texController->getTextureIdx("slotTorus.png"));
+        component->setShaderIdx(texController->getDefaultShaderProgramIdx());
         auto tComponentTorus = torus->getTransformComponent();
         mainScene->addChild(torus);
         
@@ -103,7 +106,7 @@ std::shared_ptr<scene> factoryScene::createSlotMachineScene() {
     buttonPlay->getComponent<clickComponent>()->setClickCallback([wButton, wTorusPull, rotateTorusAction, labelWeak, addActionChangeToLabel, mainScene]() {
         for (int n = 0; n < 5; n++) {
             if (rotateTorusAction[n]) {
-                float randSpeed = 1100 - (100 * (rand() % 8));
+                float randSpeed = 500 - (50 * (rand() % 5));
                 rotateTorusAction[n](wTorusPull[n], randSpeed);
             }
             int waitTime = 1000 + 500 * n;
@@ -112,7 +115,6 @@ std::shared_ptr<scene> factoryScene::createSlotMachineScene() {
                     torus->clearAllActions();
                     auto q = torus->getTransformComponent()->getRotate();
                     auto rotate = q.convertToEuler3f();
-                    //std::cout << std::to_string(rotate) << std::endl;
                     auto step =  360.f / 8.f;
                     auto angle = rotate.x();
                     while (angle > step) {
@@ -123,9 +125,8 @@ std::shared_ptr<scene> factoryScene::createSlotMachineScene() {
                         angle = step - angle;
                     }
                     angle += step + 22.5;
-                    std::cout << std::to_string(angle) << std::endl;
                     q = q * quaternion::getFromEuler(quaternion::axisX, -angle);
-                    torus->addAction(factoryAction::createRotateLerpAction(q, 1000));
+                    torus->addAction(factoryAction::createRotateLerpAction(q, 500));
                 }
             }));
         }

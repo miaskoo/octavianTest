@@ -167,3 +167,26 @@ void entity::setRotate(vec3f rotate) {
     getTransformComponent()->setRotate(rotate);
 }
 
+void entity::setPos(float x, float y) {
+    setPos({x,y});
+}
+
+void entity::setSize(float x, float y, float z) {
+    setSize({x,y,z});
+}
+
+void entity::setRotate(float x, float y, float z) {
+    setRotate({x,y,z});
+}
+
+void entity::setAnchor(float x, float y) {
+    setAnchor({x,y});
+}
+
+void entity::setPivot(float x, float y) {
+    setPivot({x,y});
+}
+
+void entity::setScale(float x, float y, float z) {
+    setScale({x,y,z});
+}

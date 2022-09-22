@@ -1,10 +1,11 @@
 #include "constructorWindow.h"
+#include "factoryScene.h"
 
 int main(int argc, char **argv) {
     auto construct = constructorWindow::getInstance();
     construct->initWindow(argc, argv);
     construct->initResource();
-    construct->initScene();
+    construct->setGameScene(factoryScene::createGameScene());
     construct->initGlutFunc();
     construct->startUpdateThread();
     construct->startMainLoop();

@@ -5,7 +5,7 @@ project(OctavianTest LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 # includes
-include_directories("./" "include" "src" "src/actions" "src/components" "src/entity" "src/entity/2d" "src/entity/3d" "src/factory" "src/systems")
+include_directories("./" "include" "src" "src/actions" "src/components" "src/entity" "src/entity/2d" "src/entity/3d" "src/factory" "src/systems" "src/controllers")
 link_directories("./")
 
 # test
@@ -15,6 +15,7 @@ file(GLOB_RECURSE COMPONENTS src/components/*.h src/components/*.cpp)
 file(GLOB_RECURSE ENTITY src/entity/*.h src/entity/*.cpp)
 file(GLOB_RECURSE FACTORY src/factory/*.h src/factory/*.cpp)
 file(GLOB_RECURSE SYSTEM src/systems/*.h src/systems/*.cpp)
+file(GLOB_RECURSE CONTROLLER src/controllers/*.h src/controllers/*.cpp)
 # SOIL
 #file(GLOB_RECURSE HEADERS_SOIL include/SOIL/*.h)
 
@@ -25,10 +26,11 @@ source_group("test/components" FILES ${COMPONENTS})
 source_group("test/entity" FILES ${ENTITY})
 source_group("test/factory" FILES ${FACTORY})
 source_group("test/systems" FILES ${SYSTEM})
+source_group("test/controllers" FILES ${CONTROLLER})
 
 source_group("SOIL" FILES ${HEADERS_SOIL})
 
-add_executable(${PROJECT_NAME} ${ACTION} ${MAIN} ${COMPONENTS} ${ENTITY} ${FACTORY} ${SYSTEM} ${HEADERS_SOIL})
+add_executable(${PROJECT_NAME} ${ACTION} ${MAIN} ${COMPONENTS} ${ENTITY} ${FACTORY} ${SYSTEM} ${CONTROLLER} ${HEADERS_SOIL})
 
 #find frameworks
 if (${PLATFORM} STREQUAL MACOS)

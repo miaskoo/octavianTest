@@ -8,6 +8,12 @@
 #include "renderComponent.h"
 #include "textureComponent.h"
 
+#include "textureController.h"
+#include "bufferController.h"
+#include "constructorWindow.h"
+
+#include "struct.h"
+
 #ifdef MACOS
 #include "GLUT/glut.h"
 #else
@@ -59,7 +65,7 @@ std::shared_ptr<entity> factoryEntity::createTorus(size_t countSector) {
     component->setPivot(vec3f({0.5f,0.5f,0.0f}));
     result->createCash();
     
-    auto buff = fBuffer.getTorusBufferIdx(countSector);
+    auto buff = constructorWindow::getInstance()->getBufferController()->getTorusBufferIdx(countSector);
     result->getComponent<bufferComponent>()->setBuffIdx(buff.vao);
     result->getComponent<bufferComponent>()->setBuffSize(buff.countIdx);
     result->getComponent<bufferComponent>()->setCullFaceMode(true);
@@ -74,7 +80,7 @@ std::shared_ptr<entity> factoryEntity::createSprite(const std::string& dirTextur
     component->setPivot({0.5f,0.5f});
     component->setScale({1.f,1.f});
     
-    result->getComponent<textureComponent>()->setTexIdx(fTexture.getTextureIdx(dirTexture));
+    result->getComponent<textureComponent>()->setTexIdx(constructorWindow::getInstance()->getTextureController()->getTextureIdx(dirTexture));
     result->createCash();
     return result;
 }
@@ -87,14 +93,11 @@ std::shared_ptr<entity> factoryEntity::createButton(const std::string& dirTextur
     component->setAnchor({0.5, 0.5});
     component->setPivot({0.5, 0.5});
     
+    auto texController = constructorWindow::getInstance()->getTextureController();
     result->getComponent<textureButtonComponent>()->setTexButtonIdx(
-        fTexture.getTextureIdx(dirTextureNormal),
-        fTexture.getTextureIdx(dirTextureCover),
-        fTexture.getTextureIdx(dirTextureClick));
+        texController->getTextureIdx(dirTextureNormal),
+        texController->getTextureIdx(dirTextureCover),
+        texController->getTextureIdx(dirTextureClick));
     result->createCash();
     return result;
-}
-
-factoryTexture& factoryEntity::getTextureFactory() {
-    return fTexture;
 }

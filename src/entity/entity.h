@@ -48,6 +48,12 @@ public:
     void setAnchor(vec2f anchor);
     void setPivot(vec2f pivot);
     void setScale(vec3f scale);
+    void setPos(float x, float y);
+    void setSize(float x, float y, float z = 0.f);
+    void setRotate(float x, float y, float z = 0.f);
+    void setAnchor(float x, float y);
+    void setPivot(float x, float y);
+    void setScale(float x, float y, float z = 0.f);
     transformComponentInterface* getTransformComponent();
 protected:
     entity() = delete;
