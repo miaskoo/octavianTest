@@ -16,8 +16,6 @@ file(GLOB_RECURSE ENTITY src/entity/*.h src/entity/*.cpp)
 file(GLOB_RECURSE FACTORY src/factory/*.h src/factory/*.cpp)
 file(GLOB_RECURSE SYSTEM src/systems/*.h src/systems/*.cpp)
 file(GLOB_RECURSE CONTROLLER src/controllers/*.h src/controllers/*.cpp)
-# SOIL
-#file(GLOB_RECURSE HEADERS_SOIL include/SOIL/*.h)
 
 #add filters
 source_group("test" FILES ${MAIN})
