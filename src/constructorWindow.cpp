@@ -1,22 +1,15 @@
 #include "constructorWindow.h"
 
-#include "struct.h"
-#include "scene.h"
-#include "transformComponent.h"
-#include "clickComponent.h"
-#include "colorComponent.h"
 #include "renderComponent.h"
-#include "textureComponent.h"
+#include "transformComponent.h"
+#include "scene.h"
 
 #include "renderSystem.h"
 #include "mouseSystem.h"
 
-#include "factoryAction.h"
+#include "factoryScene.h"
 
 #include <stdio.h>
-#include <iostream>
-#include <math.h>
-#include <vector>
 #include <chrono>
 #include <ctime>
 #include <thread>
@@ -27,7 +20,6 @@
 #include "glew/glew.h"
 #include "freeglut/freeglut.h"
 #endif
-
 
 void constructorWindow::initWindow(int argc, char **argv) {
     glutInit(&argc, argv);
@@ -43,7 +35,7 @@ void constructorWindow::initWindow(int argc, char **argv) {
 }
 
 void constructorWindow::initResource() {
-    fEntity.getTextureFactory().loadTexturs();
+    fScene.fEntity.getTextureFactory().loadTexturs();
 }
 
 void constructorWindow::updateWindow() {
@@ -73,8 +65,6 @@ void constructorWindow::updateWindow() {
             dt = minDtUpdateMs;
         }
         time+= dt;
-        
-        
     }
 }
 
@@ -201,26 +191,15 @@ void constructorWindow::cleanup() {
 }
 
 void constructorWindow::initScene() {
-    mainScene = std::make_shared<scene>();
-    mainScene->setWeakPointerThis(mainScene);
+    mainScene = fScene.createSlotMachineScene();
     
-    auto sceneSprite = fEntity.createSprite("scene.png");
-    sceneSprite->setSize({static_cast<float>(screenW), static_cast<float>(screenH)});
-    sceneSprite->setIgnoreSorting(true);
-    mainScene->addChild(sceneSprite);
-    
-    auto s = fEntity.createSprite("slot.png");
-    s->setPos({30, -40});
-    s->setSize({1400, 850});
-    mainScene->addChild(s);
-
-    auto uiNode = fEntity.createNode();
+    auto uiNode = fScene.fEntity.createNode();
     uiNode->setPos({-200.f,-100.f});
     uiNode->setAnchor({1.f, 1.f});
-    fpsLabel = fEntity.createLabel();
-    timeLabel = fEntity.createLabel();
+    fpsLabel = fScene.fEntity.createLabel();
+    timeLabel = fScene.fEntity.createLabel();
     timeLabel->setPos({0.f,-20.f});
-    mousePosLabel = fEntity.createLabel();
+    mousePosLabel = fScene.fEntity.createLabel();
     mousePosLabel->setPos({0.f, 20.f});
     mainScene->addChild(uiNode);
 
@@ -231,117 +210,6 @@ void constructorWindow::initScene() {
     uiNode->addChild(fpsLabel);
     uiNode->addChild(timeLabel);
     uiNode->addChild(mousePosLabel);
-    
-    auto buttonPlay = fEntity.createButton("wait.png", "cover.png", "press.png");
-    buttonPlay->setSize({400, 100});
-    buttonPlay->getTransformComponent()->setAnchor(tAnchor::y, 0.8f);
-    mainScene->addChild(buttonPlay);
-    
-    auto labelButtonPlay = fEntity.createLabel("TOUCH ME");
-    labelButtonPlay->setPos({0, 25});
-    labelButtonPlay->setAnchor({0.5f,0.5f});
-    labelButtonPlay->setPivot({0.5f,0.5f});
-    labelButtonPlay->setScale({2.f, 2.f});
-    buttonPlay->addChild(labelButtonPlay);
-    
-    std::weak_ptr<entity> labelWeak = labelButtonPlay;
-    
-    auto addActionChangeToLabel = [this, labelWeak](){
-        color4b yellowColor = {MAX_COLOR,MAX_COLOR,0,MAX_COLOR};
-        color4b blueColor = {0,0,MAX_COLOR,MAX_COLOR};
-        color4b purpureColor = {MAX_COLOR,0,MAX_COLOR,MAX_COLOR};
-        int timeChangeColor = 1000;
-        
-        if (auto labelButtonPlay = labelWeak.lock()) {
-            labelButtonPlay->clearAllActions();
-            auto color1 = factoryAction::createChangeColorAction(blueColor, timeChangeColor);
-            auto color2 = factoryAction::createChangeColorAction(purpureColor, timeChangeColor);
-            auto color3 = factoryAction::createChangeColorAction(yellowColor, timeChangeColor);
-            auto actionSequence = factoryAction::createActionSequence({color1, color2, color3});
-            auto actionRepeat = factoryAction::createRepeatInfinityAction(actionSequence);
-            labelButtonPlay->addAction(actionRepeat);
-        }
-    };
-    addActionChangeToLabel();
-    
-    const size_t countTorus = 5U;
-    std::function<void(std::weak_ptr<entity>, float)> rotateTorusAction[countTorus];
-    std::weak_ptr<entity> wTorusPull[countTorus];
-    
-    for (size_t n = 0; n < countTorus; n++) {
-        auto w = 3.f;
-        auto h = 3.f;
-        auto z = 1.2f;
-        auto smeh = 0.0f;
-        
-        //поскольку центр у объекта смещен в 0.5 а не 0.0 требуется добавить половину size для правильной работы anchor и pivot
-        auto size = vec3f({w,h,z});
-        auto customX = z + smeh;
-        float x = -(customX * 2) + customX * n;
-        auto pos = vec3f({x,0,0});
-        pos[0] += size[0] * 0.5f;
-        pos[1] += size[1] * 0.5f;
-        
-        auto torus = fEntity.createTorus(8);
-        torus->setPos(pos);
-        torus->setSize(size);
-        torus->setRotate({90, 0, 90});
-        auto component = torus->getComponent<textureComponent>();
-        component->setTexIdx(fEntity.getTextureFactory().getTextureIdx("slotTorus.png"));
-        component->setShaderIdx(fEntity.getTextureFactory().getShaderTextureIdx());
-        auto tComponentTorus = torus->getTransformComponent();
-        mainScene->addChild(torus);
-        
-        wTorusPull[n] = torus;
-        
-        rotateTorusAction[n] = [this](std::weak_ptr<entity> torusWeak, float speed){
-            if (auto torus = torusWeak.lock()) {
-                auto actionRot = factoryAction::createRotateAction(quaternion::axisX, -360.f, speed);
-                auto actionRep = factoryAction::createRepeatInfinityAction(actionRot);
-                torus->addAction(actionRep);
-            }
-        };
-    }
-    std::weak_ptr<entity> wButton = buttonPlay;
-    buttonPlay->getComponent<clickComponent>()->setClickCallback([this, wButton, wTorusPull, rotateTorusAction, labelWeak, addActionChangeToLabel]() {
-        for (int n = 0; n < 5; n++) {
-            if (rotateTorusAction[n]) {
-                float randSpeed = 1100 - (100 * (rand() % 8));
-                rotateTorusAction[n](wTorusPull[n], randSpeed);
-            }
-            int waitTime = 1000 + 500 * n;
-            mainScene->addAction(factoryAction::createDelayAction(waitTime, [this, wTorus = wTorusPull[n]](){
-                if (auto torus = wTorus.lock()) {
-                    torus->clearAllActions();
-                    auto q = torus->getTransformComponent()->getRotate();
-                    auto euler = quaternion::convertToEuler3f(q);
-                    auto step =  360.f / 8.f;
-                    auto angle = euler.y();
-                    size_t countStep = 0U;
-                    while (angle > step) {
-                        countStep++;
-                        angle -= step;
-                    }
-                    angle = -22.5f - step * (countStep + 1);
-                    auto result = quaternion::getFromEuler3(90, angle, 90);
-                    torus->addAction(factoryAction::createRotateLerpAction(result, 500));
-                }
-            }));
-        }
-        mainScene->addAction(factoryAction::createDelayAction(3100, [wButton, labelWeak, addActionChangeToLabel](){
-            if (auto buttonPlay = wButton.lock()) {
-                buttonPlay->getComponent<clickComponent>()->setClickable(true);
-            }
-            addActionChangeToLabel();
-        }));
-        if (auto buttonPlay = wButton.lock()) {
-            buttonPlay->getComponent<clickComponent>()->setClickable(false);
-        }
-        if (auto labelButtonPlay = labelWeak.lock()) {
-            labelButtonPlay->clearAllActions();
-            labelButtonPlay->getComponent<colorComponent>()->setColor(0, 0, 0, MAX_COLOR);
-        }
-    });
 }
 
 void constructorWindow::destroyScene() {

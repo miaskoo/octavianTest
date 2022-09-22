@@ -15,6 +15,7 @@ protected:
 
 class entity : public componentContainer {
     friend class factoryEntity;
+    friend class factoryScene;
     friend class constructorWindow;
 public:
     

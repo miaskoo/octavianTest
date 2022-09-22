@@ -172,37 +172,6 @@ struct mat4f {
     float& operator [] (size_t i) {
         return value[i];
     }
-    
-    static vec3f matToVec3f(mat4f& mat) {
-        vec3f result;
-        float& x = result[0];
-        float& y = result[1];
-        float& z = result[2];
-        
-        y = -asinf(mat[2]);
-        auto cosY = cos(y);
-        y *= RADIANS;
-        if (fabs(cosY) > 0.005f) {
-            auto xTr = mat[10] / cosY;
-            auto yTr = -mat[6] / cosY;
-            x = atan2(yTr,xTr) * RADIANS;
-            xTr = mat[0] / cosY;
-            yTr = mat[1] / cosY;
-            z = atan2(yTr,xTr) * RADIANS;
-        }
-        else {
-            x = 0;
-            auto xTr = mat[5];
-            auto yTr = mat[4];
-            z = atan2(yTr,xTr) * RADIANS;
-        }
-        
-        x = round(std::clamp(fabsf(x), 0.f, 360.f ));
-        y = round(std::clamp(fabsf(y), 0.f, 360.f ));
-        z = round(std::clamp(fabsf(z), 0.f, 360.f ));
-        
-        return result;
-    }
   
     static mat4f eulerToMat3f(float x, float y, float z) {
         mat4f mat;
@@ -327,9 +296,23 @@ struct quaternion {
         return mat;
     }
     
-    static vec3f convertToEuler3f(const quaternion& q) {
-        auto mat = convertToMat3f(q);
-        return mat4f::matToVec3f(mat);
+    vec3f convertToEuler3f() {
+        vec3f result;
+        auto x = value.x();
+        auto y = value.y();
+        auto z = value.z();
+        auto w = value.w();
+        auto xy = x*y;
+        auto xz = x*z;
+        auto xw = x*w;
+        auto yz = y*z;
+        auto zw = z*w;
+
+        result[0] = atanf((2.f * xw - 2.f * yz) / (1.f - 2.f * x * x - 2.f * z * z)) * RADIANS;
+        result[1] = asinf(2.f * xy + 2.f * zw) * RADIANS;
+        result[2] = atanf((2.f * xw - 2.f * xz) / (1.f - 2.f * y * y - 2.f * z * z)) * RADIANS;
+        
+        return result;
     }
     
     static quaternion getLerp(quaternion a, quaternion b, float t) {
@@ -342,7 +325,7 @@ struct quaternion {
         }
         auto cosAngle = vec4f::getScalarProduct(a.value, b.value);
         if (std::abs(cosAngle) >= 1.f){
-            return b;
+            return a;
         }
         if (cosAngle < 0.f) {
             for (size_t n = 0U; n < b.value.size(); n++) {
@@ -355,7 +338,10 @@ struct quaternion {
         float sinAngle = sqrtf(1.f - cosAngle * cosAngle);
         
         if (fabsf(sinAngle) < 0.001f) {
-            return b;
+            for (size_t n = 0U; n < b.value.size(); n++) {
+                result.value[n] = (a.value[n] * 0.5f + b.value[n] * 0.5f);
+            }
+            return result;
         }
         
         float ratioA = sinf((1.f - t) * angle) / sinAngle;

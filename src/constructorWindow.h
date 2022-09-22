@@ -1,5 +1,5 @@
 #pragma once
-#include "factoryEntity.h"
+#include "factoryScene.h"
 #include "struct.h"
 #include <atomic>
 
@@ -53,7 +53,7 @@ private:
     std::atomic_int mouseY = 0;
     std::atomic<stateMouse> click = stateMouse::IDLE;
 
-    factoryEntity fEntity;
+    factoryScene fScene;
     
     std::shared_ptr<scene> mainScene;
     std::shared_ptr<entity> fpsLabel;
