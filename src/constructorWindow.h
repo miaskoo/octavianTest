@@ -70,6 +70,7 @@ private:
     
     std::shared_ptr<scene> mainScene;
     
+    std::shared_ptr<entity> uiNode;
     std::shared_ptr<entity> fpsLabel;
     std::shared_ptr<entity> timeLabel;
     std::shared_ptr<entity> mousePosLabel;

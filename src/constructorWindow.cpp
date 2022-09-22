@@ -195,7 +195,10 @@ void constructorWindow::setGameScene(std::shared_ptr<scene> aScene) {
 }
 
 void constructorWindow::createInfoNode() {
-    auto uiNode = factoryEntity::createNode();
+    if (!mainScene || uiNode) {
+        return;
+    }
+    uiNode = factoryEntity::createNode();
     uiNode->setPos(-200.f,-100.f);
     uiNode->setAnchor(1.f, 1.f);
     fpsLabel = factoryEntity::createLabel();
@@ -215,6 +218,10 @@ void constructorWindow::createInfoNode() {
 }
 
 void constructorWindow::destroyInfoNode() {
+    if (mainScene) {
+        mainScene->removeChild(uiNode.get());
+    }
+    uiNode.reset();
     fpsLabel.reset();
     timeLabel.reset();
     mousePosLabel.reset();

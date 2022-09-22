@@ -6,6 +6,7 @@ int main(int argc, char **argv) {
     construct->initWindow(argc, argv);
     construct->initResource();
     construct->setGameScene(factoryScene::createGameScene());
+    construct->createInfoNode();
     construct->initGlutFunc();
     construct->startUpdateThread();
     construct->startMainLoop();
